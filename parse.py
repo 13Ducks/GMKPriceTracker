@@ -1,0 +1,155 @@
+import pandas as pd
+import re
+import unicodedata
+
+money_regex = r"([£€\$]\d+)|(\d+[£€\$])"
+euro_to_usd = 1.2
+pound_to_usd = 1.4
+
+
+def parse_prices(filename):
+    print(f"Starting parsing from {filename}")
+    df = pd.read_csv(f"datasets/{filename}")
+    df.drop(df.columns[0], axis=1, inplace=True)
+    df.dropna(subset=["post"], inplace=True)
+    df.set_index("link", inplace=True)
+
+    df["post_lower"] = df["post"].str.lower()
+    df["title_lower"] = df["title"].str.lower()
+
+    sets = [
+        "base",
+        "nov",
+        "alpha",
+        "accent",
+        "bars",
+        "spacebar",
+        "light base",
+        "dark base",
+        "deskmat",
+        "rama",
+        "40s",
+        "40's",
+        "fourties",
+        "mods",
+        "extension",
+        "numpad",
+    ]
+
+    sales_data = []
+
+    def match_product(row):
+        s = row.post_lower.split("\n")
+        for l in s:
+            low = l.lower()
+            if "gmk " in low and ("~~" in low or "sold" in low):
+                after_gmk = low.split("gmk ")[1]
+                product_name = "gmk " + re.split(r"[^\w\+\.]", after_gmk)[0]
+
+                if "gmk stab" in product_name or "gmk screw" in product_name:
+                    continue
+
+                matches = re.split(money_regex, low)
+                temp_data = {}
+
+                if len(matches) > 1:
+                    for i in range(0, len(matches) - 1, 3):
+                        curr_price = int(
+                            matches[i + 1][1:]
+                            if matches[i + 1]
+                            else matches[i + 2][:-1]
+                        )
+                        currency = (
+                            matches[i + 1][0] if matches[i + 1] else matches[i + 2][-1]
+                        )
+                        if currency == "€":
+                            curr_price = round(curr_price * euro_to_usd)
+                        if currency == "£":
+                            curr_price = round(curr_price * pound_to_usd)
+
+                        curr_str = matches[i]
+                        kits = []
+                        removeBase = False
+
+                        for x in sets:
+                            if x in curr_str:
+                                if x == "nov":
+                                    kits.append("novelties")
+                                elif x == "light base" or x == "dark base":
+                                    removeBase = True
+                                    kits.insert(0, f"{x}")
+                                elif x == "bars" or x == "spacebar":
+                                    if "spacebars" not in kits:
+                                        kits.append("spacebars")
+                                elif x in ["40s", "40's", "fourties"]:
+                                    kits.append("40s")
+                                else:
+                                    kits.append(x)
+
+                        if i == 0 and not kits:
+                            kits.append("base")
+
+                        products = []
+                        for p in kits:
+                            if removeBase and p == "base":
+                                continue
+                            products.append(p)
+
+                        if i == 0:
+                            if "base" not in products:
+                                for x in after_gmk.split(" "):
+                                    if x in sets:
+                                        break
+
+                                    if "+" in x or "," in x:
+                                        if x == "olivia++":
+                                            continue
+
+                                        products.insert(0, "base")
+                                        break
+
+                            temp_data["products"] = products
+                            temp_data["str"] = curr_str
+                            temp_data["price"] = curr_price
+
+                        if kits and i > 0:
+                            sales_data.append(
+                                [
+                                    row[0],
+                                    product_name,
+                                    ", ".join(temp_data["products"]),
+                                    temp_data["price"],
+                                    row.date,
+                                ]
+                            )
+                            temp_data["products"] = products
+                            temp_data["str"] = curr_str
+                            temp_data["price"] = curr_price
+                        else:
+                            temp_data["price"] = min(temp_data["price"], curr_price)
+
+                    sales_data.append(
+                        [
+                            row[0],
+                            product_name,
+                            ", ".join(temp_data["products"]),
+                            temp_data["price"],
+                            row.date,
+                        ]
+                    )
+
+    for row in df.itertuples():
+        match_product(row)
+
+    sales_df = pd.DataFrame(
+        sales_data, columns=["link", "product", "sets", "price", "date"]
+    )
+    sales_df["date"] = pd.to_datetime(sales_df["date"], unit="s")
+
+    remove_accents = (
+        lambda text: unicodedata.normalize("NFD", text)
+        .encode("ascii", "ignore")
+        .decode("utf-8")
+    )
+    sales_df["product"] = sales_df["product"].apply(remove_accents)
+    return sales_df
