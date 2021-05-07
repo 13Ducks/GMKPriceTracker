@@ -98,7 +98,7 @@ def parse_prices(filename):
                         if i == 0:
                             if "base" not in products:
                                 for x in after_gmk.split(" "):
-                                    if x in sets:
+                                    if any([se in x for se in sets]):
                                         break
 
                                     if "+" in x or "," in x:
