@@ -152,4 +152,6 @@ def parse_prices(filename):
         .decode("utf-8")
     )
     sales_df["product"] = sales_df["product"].apply(remove_accents)
+    sales_df["product"].replace(r"\W+$", "", regex=True, inplace=True)
+
     return sales_df

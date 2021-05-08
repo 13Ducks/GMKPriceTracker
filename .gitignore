@@ -2,3 +2,4 @@
 credentials.txt
 .DS_Store
 __pycache__
+firebaseAccountKey.json
