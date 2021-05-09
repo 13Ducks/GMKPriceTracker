@@ -94,6 +94,7 @@ def parse_prices(filename):
                             if removeBase and p == "base":
                                 continue
                             products.append(p)
+                        
 
                         if i == 0:
                             if "base" not in products:
@@ -111,8 +112,20 @@ def parse_prices(filename):
                             temp_data["products"] = products
                             temp_data["str"] = curr_str
                             temp_data["price"] = curr_price
-
-                        if kits and i > 0:
+                        temp_data['category'] = None
+                        if products:
+                            if len(products) == 1 and kits[0] == 'base':
+                                temp_data['category'] = 'base'
+                            elif len(products) == 1:
+                                temp_data['category'] = 'single'
+                            elif len(products) > 1 and 'base' in kits:
+                                temp_data['category'] = 'bundle'
+                            else:
+                                temp_data['category'] = 'other'
+                            
+                            
+                        
+                        if products and i > 0:
                             sales_data.append(
                                 [
                                     row[0],
@@ -120,6 +133,7 @@ def parse_prices(filename):
                                     ", ".join(temp_data["products"]),
                                     temp_data["price"],
                                     row.date,
+                                    temp_data["category"],
                                 ]
                             )
                             temp_data["products"] = products
@@ -127,7 +141,15 @@ def parse_prices(filename):
                             temp_data["price"] = curr_price
                         else:
                             temp_data["price"] = min(temp_data["price"], curr_price)
-
+                    if temp_data['products']:
+                        if len(temp_data['products']) == 1 and temp_data['products'][0] == 'base':
+                            temp_data['category'] = 'base'
+                        elif len(temp_data['products']) == 1:
+                            temp_data['category'] = 'single'
+                        elif len(temp_data['products']) > 1 and 'base' in temp_data['products']:
+                            temp_data['category'] = 'bundle'
+                        else:
+                            temp_data['category'] = 'other'
                     sales_data.append(
                         [
                             row[0],
@@ -135,6 +157,7 @@ def parse_prices(filename):
                             ", ".join(temp_data["products"]),
                             temp_data["price"],
                             row.date,
+                            temp_data["category"],
                         ]
                     )
 
@@ -142,7 +165,7 @@ def parse_prices(filename):
         match_product(row)
 
     sales_df = pd.DataFrame(
-        sales_data, columns=["link", "product", "sets", "price", "date"]
+        sales_data, columns=["link", "product", "sets", "price", "date", "category"]
     )
     sales_df["date"] = pd.to_datetime(sales_df["date"], unit="s")
 
@@ -155,3 +178,7 @@ def parse_prices(filename):
     sales_df["product"].replace(r"\W+$", "", regex=True, inplace=True)
 
     return sales_df
+
+if __name__ == 'main':
+    parse_prices('april2020.csv').to_csv("sales/sales_test.csv")
+    print('done')
