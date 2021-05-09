@@ -7,6 +7,18 @@ euro_to_usd = 1.2
 pound_to_usd = 1.4
 
 
+def get_category(products):
+    has_base = any(["base" in p for p in products])
+    if len(products) == 1 and has_base:
+        return "base"
+    elif len(products) == 1:
+        return "single"
+    elif len(products) > 1 and has_base:
+        return "bundle"
+
+    return "other"
+
+
 def parse_prices(filename):
     print(f"Starting parsing from {filename}")
     df = pd.read_csv(f"datasets/{filename}")
@@ -77,7 +89,7 @@ def parse_prices(filename):
                                     kits.append("novelties")
                                 elif x == "light base" or x == "dark base":
                                     removeBase = True
-                                    kits.insert(0, f"{x}")
+                                    kits.insert(0, x)
                                 elif x == "bars" or x == "spacebar":
                                     if "spacebars" not in kits:
                                         kits.append("spacebars")
@@ -89,15 +101,12 @@ def parse_prices(filename):
                         if i == 0 and not kits:
                             kits.append("base")
 
-                        products = []
-                        for p in kits:
-                            if removeBase and p == "base":
-                                continue
-                            products.append(p)
-                        
+                        if removeBase and "base" in kits:
+                            kits.remove("base")
 
                         if i == 0:
-                            if "base" not in products:
+                            has_base = any(["base" in k for k in kits])
+                            if not has_base:
                                 for x in after_gmk.split(" "):
                                     if any([se in x for se in sets]):
                                         break
@@ -106,58 +115,44 @@ def parse_prices(filename):
                                         if x == "olivia++":
                                             continue
 
-                                        products.insert(0, "base")
+                                        kits.insert(0, "base")
                                         break
 
-                            temp_data["products"] = products
+                            temp_data["products"] = kits
                             temp_data["str"] = curr_str
                             temp_data["price"] = curr_price
-                        temp_data['category'] = None
-                        if products:
-                            if len(products) == 1 and kits[0] == 'base':
-                                temp_data['category'] = 'base'
-                            elif len(products) == 1:
-                                temp_data['category'] = 'single'
-                            elif len(products) > 1 and 'base' in kits:
-                                temp_data['category'] = 'bundle'
-                            else:
-                                temp_data['category'] = 'other'
-                            
-                            
-                        
-                        if products and i > 0:
+
+                        if temp_data["products"]:
+                            temp_data["category"] = get_category(temp_data["products"])
+
+                        if kits and i > 0:
                             sales_data.append(
                                 [
                                     row[0],
                                     product_name,
-                                    ", ".join(temp_data["products"]),
+                                    temp_data["products"],
                                     temp_data["price"],
-                                    row.date,
                                     temp_data["category"],
+                                    row.date,
                                 ]
                             )
-                            temp_data["products"] = products
+                            temp_data["products"] = kits
                             temp_data["str"] = curr_str
                             temp_data["price"] = curr_price
                         else:
                             temp_data["price"] = min(temp_data["price"], curr_price)
-                    if temp_data['products']:
-                        if len(temp_data['products']) == 1 and temp_data['products'][0] == 'base':
-                            temp_data['category'] = 'base'
-                        elif len(temp_data['products']) == 1:
-                            temp_data['category'] = 'single'
-                        elif len(temp_data['products']) > 1 and 'base' in temp_data['products']:
-                            temp_data['category'] = 'bundle'
-                        else:
-                            temp_data['category'] = 'other'
+
+                    if temp_data["products"]:
+                        temp_data["category"] = get_category(temp_data["products"])
+
                     sales_data.append(
                         [
                             row[0],
                             product_name,
-                            ", ".join(temp_data["products"]),
+                            temp_data["products"],
                             temp_data["price"],
-                            row.date,
                             temp_data["category"],
+                            row.date,
                         ]
                     )
 
@@ -165,7 +160,7 @@ def parse_prices(filename):
         match_product(row)
 
     sales_df = pd.DataFrame(
-        sales_data, columns=["link", "product", "sets", "price", "date", "category"]
+        sales_data, columns=["link", "product", "sets", "price", "category", "date"]
     )
     sales_df["date"] = pd.to_datetime(sales_df["date"], unit="s")
 
@@ -178,7 +173,3 @@ def parse_prices(filename):
     sales_df["product"].replace(r"\W+$", "", regex=True, inplace=True)
 
     return sales_df
-
-if __name__ == 'main':
-    parse_prices('april2020.csv').to_csv("sales/sales_test.csv")
-    print('done')
