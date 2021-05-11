@@ -6,7 +6,7 @@ money_regex = r"([£€\$]\d+)|(\d+[£€\$])"
 euro_to_usd = 1.2
 pound_to_usd = 1.4
 
-bad_words = ["stab", "screw in", "snap in", "clip in", "pcb mount", "plate mount"]
+bad_words = ["stab", "screw", "snap in", "clip in", "pcb mount", "plate mount"]
 
 
 def get_category(products):
@@ -57,7 +57,11 @@ def parse_prices(filename):
         s = row.post_lower.split("\n")
         for l in s:
             low = l.lower()
+
             if "gmk " in low and ("~~" in low or "sold" in low):
+                if any([b in low for b in bad_words]):
+                    continue
+
                 after_gmk = low.split("gmk ")[1]
                 product_name = "gmk " + re.split(r"[^\w\+\.]", after_gmk)[0]
 
@@ -81,6 +85,7 @@ def parse_prices(filename):
                             curr_price = round(curr_price * pound_to_usd)
 
                         curr_str = matches[i]
+
                         kits = []
                         removeBase = False
 
@@ -98,10 +103,6 @@ def parse_prices(filename):
                                     kits.append("40s")
                                 else:
                                     kits.append(x)
-                            if not remove_entry and any(
-                                [b in curr_str for b in bad_words]
-                            ):
-                                remove_entry = True
 
                         if i == 0 and not kits:
                             kits.append("base")
@@ -160,8 +161,7 @@ def parse_prices(filename):
                                         and temp_data["price"] <= 50
                                     ):
                                         remove_entry = True
-                                        # if there is a super cheap base kit, fuck this entry its no good!
-                                    # don't update price to lower price
+
                             else:
                                 temp_data["price"] = min(temp_data["price"], curr_price)
 
