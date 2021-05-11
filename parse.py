@@ -6,6 +6,8 @@ money_regex = r"([£€\$]\d+)|(\d+[£€\$])"
 euro_to_usd = 1.2
 pound_to_usd = 1.4
 
+bad_words = ["stab", "screw in", "snap in", "clip in", "pcb mount", "plate mount"]
+
 
 def get_category(products):
     has_base = any(["base" in p for p in products])
@@ -59,14 +61,11 @@ def parse_prices(filename):
                 after_gmk = low.split("gmk ")[1]
                 product_name = "gmk " + re.split(r"[^\w\+\.]", after_gmk)[0]
 
-                if "gmk stab" in product_name or "gmk screw" in product_name:
-                    continue
-
                 matches = re.split(money_regex, low)
                 temp_data = {}
 
                 if len(matches) > 1:
-                    fuckthisentry = False
+                    remove_entry = False
                     for i in range(0, len(matches) - 1, 3):
                         curr_price = int(
                             matches[i + 1][1:]
@@ -99,9 +98,10 @@ def parse_prices(filename):
                                     kits.append("40s")
                                 else:
                                     kits.append(x)
-                            if not fuckthisentry and ('stab' in curr_str or 'screw in' in curr_str or 'snap in' in curr_str or 'clip in' in curr_str or 'pcb mount' in curr_str or 'plate mount' in curr_str):
-                                fuckthisentry = True
-                                #print(f'fuck this entre {curr_str}')
+                            if not remove_entry and any(
+                                [b in curr_str for b in bad_words]
+                            ):
+                                remove_entry = True
 
                         if i == 0 and not kits:
                             kits.append("base")
@@ -129,11 +129,9 @@ def parse_prices(filename):
 
                         if temp_data["products"]:
                             temp_data["category"] = get_category(temp_data["products"])
-                        
-                        
 
                         if kits and i > 0:
-                            if not fuckthisentry:
+                            if not remove_entry:
                                 sales_data.append(
                                     [
                                         row[0],
@@ -149,21 +147,28 @@ def parse_prices(filename):
                             temp_data["price"] = curr_price
                         else:
                             if curr_price <= 50:
-                                if len(temp_data["products"]) <= 1 and 'base' not in temp_data["products"]:
-                                    temp_data["price"] = min(temp_data["price"], curr_price)
+                                if (
+                                    len(temp_data["products"]) <= 1
+                                    and "base" not in temp_data["products"]
+                                ):
+                                    temp_data["price"] = min(
+                                        temp_data["price"], curr_price
+                                    )
                                 else:
-                                    if 'base' in temp_data['products'] and temp_data['price'] <= 50:
-                                        fuckthisentry = True
-                                        #if there is a super cheap base kit, fuck this entry its no good!
-                                    #don't update price to lower price
+                                    if (
+                                        "base" in temp_data["products"]
+                                        and temp_data["price"] <= 50
+                                    ):
+                                        remove_entry = True
+                                        # if there is a super cheap base kit, fuck this entry its no good!
+                                    # don't update price to lower price
                             else:
                                 temp_data["price"] = min(temp_data["price"], curr_price)
-                                    
 
                     if temp_data["products"]:
                         temp_data["category"] = get_category(temp_data["products"])
 
-                    if not fuckthisentry:
+                    if not remove_entry:
                         sales_data.append(
                             [
                                 row[0],
