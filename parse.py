@@ -36,6 +36,7 @@ def parse_prices(filename):
         "accent",
         "bars",
         "spacebar",
+        "cable",
         "light base",
         "dark base",
         "deskmat",
@@ -65,6 +66,7 @@ def parse_prices(filename):
                 temp_data = {}
 
                 if len(matches) > 1:
+                    fuckthisentry = False
                     for i in range(0, len(matches) - 1, 3):
                         curr_price = int(
                             matches[i + 1][1:]
@@ -97,6 +99,9 @@ def parse_prices(filename):
                                     kits.append("40s")
                                 else:
                                     kits.append(x)
+                            if not fuckthisentry and ('stab' in curr_str or 'screw in' in curr_str or 'snap in' in curr_str or 'clip in' in curr_str or 'pcb mount' in curr_str or 'plate mount' in curr_str):
+                                fuckthisentry = True
+                                #print(f'fuck this entre {curr_str}')
 
                         if i == 0 and not kits:
                             kits.append("base")
@@ -124,37 +129,51 @@ def parse_prices(filename):
 
                         if temp_data["products"]:
                             temp_data["category"] = get_category(temp_data["products"])
+                        
+                        
 
                         if kits and i > 0:
-                            sales_data.append(
-                                [
-                                    row[0],
-                                    product_name,
-                                    temp_data["products"],
-                                    temp_data["price"],
-                                    temp_data["category"],
-                                    row.date,
-                                ]
-                            )
+                            if not fuckthisentry:
+                                sales_data.append(
+                                    [
+                                        row[0],
+                                        product_name,
+                                        temp_data["products"],
+                                        temp_data["price"],
+                                        temp_data["category"],
+                                        row.date,
+                                    ]
+                                )
                             temp_data["products"] = kits
                             temp_data["str"] = curr_str
                             temp_data["price"] = curr_price
                         else:
-                            temp_data["price"] = min(temp_data["price"], curr_price)
+                            if curr_price <= 50:
+                                if len(temp_data["products"]) <= 1 and 'base' not in temp_data["products"]:
+                                    temp_data["price"] = min(temp_data["price"], curr_price)
+                                else:
+                                    if 'base' in temp_data['products'] and temp_data['price'] <= 50:
+                                        fuckthisentry = True
+                                        #if there is a super cheap base kit, fuck this entry its no good!
+                                    #don't update price to lower price
+                            else:
+                                temp_data["price"] = min(temp_data["price"], curr_price)
+                                    
 
                     if temp_data["products"]:
                         temp_data["category"] = get_category(temp_data["products"])
 
-                    sales_data.append(
-                        [
-                            row[0],
-                            product_name,
-                            temp_data["products"],
-                            temp_data["price"],
-                            temp_data["category"],
-                            row.date,
-                        ]
-                    )
+                    if not fuckthisentry:
+                        sales_data.append(
+                            [
+                                row[0],
+                                product_name,
+                                temp_data["products"],
+                                temp_data["price"],
+                                temp_data["category"],
+                                row.date,
+                            ]
+                        )
 
     for row in df.itertuples():
         match_product(row)
