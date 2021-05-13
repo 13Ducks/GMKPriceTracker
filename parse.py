@@ -128,7 +128,8 @@ def parse_prices(filename):
 
                             temp_data["products"] = kits
                             temp_data["str"] = curr_str
-                            temp_data["price"] = curr_price
+                            if not addToWeird:
+                                temp_data["price"] = curr_price
 
                         if temp_data["products"]:
                             temp_data["category"] = get_category(temp_data["products"])
@@ -146,6 +147,7 @@ def parse_prices(filename):
                                             row.date,
                                         ]
                                     )
+                                    addToWeird = False
                                 else:
                                     sales_data.append(
                                         [
@@ -157,6 +159,8 @@ def parse_prices(filename):
                                             row.date,
                                         ]
                                     )
+                            else:
+                                remove_entry = False
                             temp_data["products"] = kits
                             temp_data["str"] = curr_str
                             temp_data["price"] = curr_price
@@ -175,14 +179,15 @@ def parse_prices(filename):
                                         and temp_data["price"] <= 50
                                     ):
                                         remove_entry = True
-                            elif curr_price <= 90:
+                            elif curr_price <= 100:
                                 if(
                                     "base" in temp_data["products"]
                                 ):
                                     addToWeird = True
 
                             else:
-                                temp_data["price"] = min(temp_data["price"], curr_price)
+                                if not addToWeird:
+                                    temp_data["price"] = min(temp_data["price"], curr_price)
 
                     if temp_data["products"]:
                         temp_data["category"] = get_category(temp_data["products"])
@@ -199,6 +204,7 @@ def parse_prices(filename):
                                     row.date,
                                 ]
                             )
+                            addToWeird = False
                         else:
                             sales_data.append(
                                 [
@@ -210,6 +216,8 @@ def parse_prices(filename):
                                     row.date,
                                 ]
                             )
+                    else:
+                        remove_entry = True
 
     for row in df.itertuples():
         match_product(row)
