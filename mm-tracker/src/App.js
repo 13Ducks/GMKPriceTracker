@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
-import firebase from './firebase.js';
+import db from './firebase.js';
 
 import {
   LineChart,
@@ -13,6 +13,27 @@ import {
   Legend
 } from "recharts";
 
+function CustomTooltip({ payload, label, active }) {
+  if (active && payload) {
+    let p = [];
+    const categories = ['base', 'bundle', 'single', 'other']
+    for (let i in payload[0].payload) {
+      if (categories.includes(i)) {
+        p.push(<p className='tooltip-content'>{i}: ${Math.round(payload[0].payload[i])}, {payload[0].payload[(i + "_q")]} units</p>)
+      }
+
+    }
+    return (
+      <div className='custom-toolip'>
+        <p className='tooltip-label'>{label}</p>
+        {p}
+      </div>
+    );
+  }
+
+  return null;
+}
+
 class App extends Component {
   constructor() {
     super();
@@ -20,7 +41,8 @@ class App extends Component {
       setname: '',
       categoryname: '',
       items: [],
-      averageMonths: []
+      averageMonths: [],
+      categoryMonths: {},
     }
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -35,17 +57,34 @@ class App extends Component {
   handleSubmit(e) {
     e.preventDefault();
     let newItems = [];
+    let sortByCategory = {};
     let sortingMonths = {};
     let averageMonths = [];
-    const db = firebase.firestore();
+    let categoryMonths = {};
+    // GOAL IS TO BE ABLE TO GET LAYERED OBJECT OF CATEGORY -> MONTH
     db.collection("gmk").doc(this.state.setname).collection('sales')
       .orderBy("date").get().then(querySnapshot => {
         querySnapshot.forEach(doc => {
-          console.log(doc.id, " => ", doc.data());
           let newData = doc.data();
           newData.id = doc.id;
           let dateConvert = newData.date.toDate();
           let key = [dateConvert.getFullYear(), dateConvert.getMonth()]
+
+          if (sortByCategory[key]) {
+            let c = sortByCategory[key]
+            if (c[newData.category]) {
+              c[newData.category].push(newData.price)
+            } else {
+              c[newData.category] = [newData.price];
+            }
+          } else {
+            sortByCategory[key] = { [newData.category]: [newData.price] }
+          }
+
+          console.log(sortByCategory)
+
+
+
           newData.date = dateConvert.toString();
           if (newData.category == this.state.categoryname) {
             if (sortingMonths[key]) {
@@ -58,7 +97,7 @@ class App extends Component {
 
 
         });
-        console.log(sortingMonths);
+
         for (let key in sortingMonths) {
           if (sortingMonths.hasOwnProperty(key)) {
             const average = sortingMonths[key].reduce((acc, c) => acc + c, 0) / sortingMonths[key].length;
@@ -68,12 +107,31 @@ class App extends Component {
               quantity: sortingMonths[key].length,
             });
           }
-
         }
+
+        for (let keyMonth in sortByCategory) {
+          if (sortByCategory.hasOwnProperty(keyMonth)) {
+            let o = sortByCategory[keyMonth];
+
+            let a = [];
+            for (let keyCategory in o) {
+              if (o.hasOwnProperty(keyCategory)) {
+                const average = o[keyCategory].reduce((acc, c) => acc + c, 0) / o[keyCategory].length;
+                a.push({
+                  category: keyCategory,
+                  average: average,
+                  quantity: o[keyCategory].length,
+                });
+              }
+            }
+            categoryMonths[keyMonth] = a;
+          }
+        }
+
         this.setState({
-          currentItem: '',
           items: newItems,
-          averageMonths: averageMonths
+          averageMonths: averageMonths,
+          categoryMonths: categoryMonths,
         });
         console.log(this.state)
       });
@@ -82,12 +140,17 @@ class App extends Component {
 
   render() {
     let data = [];
-    for (let i in this.state.averageMonths) {
-      let ob = this.state.averageMonths[i]
-      data.push({
-        name: ob.month,
-        avg: ob.average,
-      })
+    for (let i in this.state.categoryMonths) {
+      let arr = this.state.categoryMonths[i]
+      let newData = { name: i };
+      for (let j in arr) {
+        let v = arr[j];
+        newData[v.category] = v.average
+        newData[(v.category + "_q")] = v.quantity
+      }
+
+
+      data.push(newData)
     }
 
     return (
@@ -99,15 +162,18 @@ class App extends Component {
         </header>
         <LineChart
           width={500}
-          height={300}
+          height={500}
           data={data}
         >
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis dataKey="name" />
           <YAxis />
-          <Tooltip />
+          <Tooltip content={<CustomTooltip />} />
           <Legend />
-          <Line type="linear" dataKey="avg" stroke="#82ca9d" />
+          <Line type="linear" dataKey="base" stroke="#4053d3" />
+          <Line type="linear" dataKey="bundle" stroke="#b51d14" />
+          <Line type="linear" dataKey="single" stroke="#00b25d" />
+          <Line type="linear" dataKey="other" stroke="#00beff" />
         </LineChart>
         <div className='container'>
 

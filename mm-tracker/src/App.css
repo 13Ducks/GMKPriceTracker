@@ -171,3 +171,19 @@ button {
   box-shadow: 0 2px 5px 0 rgba(0,0,0,.26);
   padding: 10px 6px;
 }
+
+.custom-toolip {
+  background-color:rgba(255,255,255,.8);
+  border:2px solid #7e7e7e;
+}
+
+.tooltip-label {
+  color:#282c34;
+  text-align: center;
+}
+
+.tooltip-content {
+  color:#7e7e7e;
+  padding-left: 10px;
+  padding-right: 10px;
+}
