@@ -8,6 +8,7 @@ import {
   useParams
 } from "react-router-dom";
 import './App.css';
+import db from './firebase.js';
 
 class HomePage extends Component {
   constructor() {
@@ -32,7 +33,42 @@ class HomePage extends Component {
 }
 
 function ProductPage() {
-  return <h2>products soon</h2>;
+  const { path, url } = useRouteMatch();
+  return (
+    <div>
+      <Switch>
+        <Route exact path={path}>
+          <h3>Please select a product.</h3>
+        </Route>
+        <Route path={`${path}/:productID`}>
+          <Product />
+        </Route>
+      </Switch>
+    </div>
+  );
+}
+
+function Product() {
+
+  const { productID } = useParams();
+  let gmkID = "gmk " + productID
+
+  console.log("outside firebase " + Date.now())
+  db.collection("gmk").doc(gmkID).collection('sales')
+    .orderBy("date").get().then(querySnapshot => {
+      console.log("inside firebase " + Date.now())
+
+      querySnapshot.forEach(doc => {
+        let newData = doc.data();
+        console.log(newData, doc.id)
+      })
+    })
+
+  return (
+    <div>
+      {gmkID}
+    </div>
+  );
 }
 
 class App extends Component {
@@ -41,7 +77,6 @@ class App extends Component {
     this.state = {
     }
   }
-
 
   render() {
     return (
