@@ -37,15 +37,15 @@ function ProductPage() {
 function Product() {
     const { productID } = useParams();
     let gmkID = "gmk " + productID
-    const [product, setProduct] = useState([]);
+    const [product, setProduct] = useState({});
     const [average, setAverage] = useState({});
     const startDate = [2020, 1]
     const endDate = [2021, 6]
+    const [dataShowParams, setDataShowParams] = useState({ start: new Date(startDate[0], startDate[1] - 1, 1, 0, 0, 0, 0), end: new Date(endDate[0], endDate[1] - 1, 1, 0, 0, 0, 0) });
     const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
     useEffect(() => {
         db.collection("gmk").doc(gmkID).collection('sales').orderBy('date').get().then(querySnapshot => {
-            let newProduct = []
             let dataByMonth = {}
             for (let year = startDate[0]; year <= endDate[0]; year++) {
                 for (let month = 1; month <= 12; month++) {
@@ -64,14 +64,8 @@ function Product() {
                     id: doc.id,
                     price: newData.price,
                     link: newData.link,
-                })
-
-                newProduct.push({
-                    id: doc.id,
-                    category: newData.category,
-                    price: newData.price,
-                    link: newData.link,
-                    date: dateConvert.toString(),
+                    date: dateConvert,
+                    sets: newData.sets.join(", "),
                 })
             })
 
@@ -95,11 +89,30 @@ function Product() {
                 }
                 averageByMonth.push(averages)
             }
-            // todo: use dataByMonth for product and figure out how to render it, to enable sorting by month easily
-            setProduct(newProduct);
+
+            setProduct(dataByMonth);
             setAverage(averageByMonth)
         })
     }, []);
+
+    let dataToShow = []
+    for (let m in product) {
+        for (let c in product[m]) {
+            for (let i in product[m][c]) {
+                if (product[m][c][i].date >= dataShowParams.start && product[m][c][i].date <= dataShowParams.end) {
+                    dataToShow.push(
+                        <li key={product[m][c][i].id}>
+                            <h3>{c}</h3>
+                            <p>price: {product[m][c][i].price}</p>
+                            <p>link: <a href={"https://www.reddit.com" + product[m][c][i].link} target="_blank" rel="noopener noreferrer">{product[m][c][i].link}</a></p>
+                            <p>date: {product[m][c][i].date.toString()}</p>
+                            <p>sets: {product[m][c][i].sets}</p>
+                        </li>
+                    )
+                }
+            }
+        }
+    }
 
     return (
         <div>
@@ -107,29 +120,25 @@ function Product() {
                 width={500}
                 height={500}
                 data={average}
+                onClick={(e, payload) => {
+                    let startD = new Date(Date.parse("1 " + e.activeLabel));
+                    let endD = new Date(startD.getTime())
+                    endD.setMonth(endD.getMonth() + 1);
+                    setDataShowParams({ start: startD, end: endD })
+                }}
             >
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="ym" />
                 <YAxis />
                 <Tooltip />
                 <Legend />
-                <Line type="linear" dataKey="base" stroke="#4053d3" />
+                <Line type="linear" dataKey="base" stroke="#4053d3" activeDot={{ onClick: (e, payload) => console.log(e, payload) }} />
                 <Line type="linear" dataKey="bundle" stroke="#b51d14" />
                 <Line type="linear" dataKey="single" stroke="#00b25d" />
                 <Line type="linear" dataKey="other" stroke="#00beff" />
             </LineChart>
-
-            {product.map((item) => {
-                return (
-                    <li key={item.id}>
-                        <h3>{item.category}</h3>
-                        <p>price: {item.price}</p>
-                        <p>link: {item.link}</p>
-                        <p>date: {item.date}</p>
-                    </li>
-                )
-            })}
-        </div>
+            { dataToShow}
+        </div >
     );
 }
 
