@@ -14,4 +14,4 @@ for f in files:
         first = False
     else:
         df = df.append(data[1])
-df.to_csv("sales/manual_data.csv")
+df.to_csv("sales/grouped.csv")

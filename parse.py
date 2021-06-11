@@ -42,6 +42,8 @@ def parse_prices(filename):
         "light base",
         "dark base",
         "deskmat",
+        "desk mat",
+        "cable",
         "rama",
         "40s",
         "40's",
@@ -244,7 +246,7 @@ def parse_prices(filename):
 
     return (sales_df, manual_df)
 
-if __name__ == 'main':
+if __name__ == '__main__':
     a = parse_prices('april2020.csv')
     a[0].to_csv("sales/good_data.csv")
     a[1].to_csv("sales/bad_data.csv")
