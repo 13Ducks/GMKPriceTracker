@@ -4,7 +4,7 @@ function HomePage() {
     return (
         <div className='app'>
             <Link to='/products/mizu/'>
-                <button type="button">
+                <button type="button" class="mizu">
                     GMK Mizu
             </button>
             </Link>

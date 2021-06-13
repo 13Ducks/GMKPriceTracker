@@ -1,4 +1,4 @@
-button {
+.mizu {
   background-image: url("./gmk_mizu.jpg");
   background-size: 300px;
   cursor: pointer;
@@ -8,3 +8,32 @@ button {
   color: #fff;
   font-size: 32px;
 }
+
+.resetSetButton {
+  background: #ED4337;
+  border: 1px solid #ccc;
+  padding: 10px 30px;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.includeSetBox {
+  padding-left: 20px;
+}
+
+table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+td, th {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+}
+
+tr:nth-child(even) {
+  background-color: #dddddd;
+}
+
