@@ -24,6 +24,13 @@ const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "
 const START_DATE = [2020, 1]
 const END_DATE = [2021, 5]
 
+function sortObjectByKey(obj, key, asc) {
+    if (asc)
+        return obj.sort((a, b) => a[key] < b[key] ? -1 : a[key] > b[key] ? 1 : 0)
+    else
+        return obj.sort((a, b) => b[key] < a[key] ? -1 : b[key] > a[key] ? 1 : 0)
+}
+
 function ProductPage() {
     const { path, url } = useRouteMatch();
     return (
@@ -43,10 +50,11 @@ function ProductPage() {
 function Product() {
     const { productID } = useParams();
     const gmkID = "gmk " + productID
-    const [product, setProduct] = useState({});
+    const [product, setProduct] = useState([]);
     const [average, setAverage] = useState({});
     const [dataShowParams, setDataShowParams] = useState({ start: new Date(START_DATE[0], START_DATE[1] - 1, 1, 0, 0, 0, 0), end: new Date(END_DATE[0], END_DATE[1] - 1, 1, 0, 0, 0, 0) });
     const [setsShow, setSetsShow] = useState([...SETS])
+    const [currentSort, setCurrentSort] = useState(['date', true])
 
     function buttonSetInclude(setName) {
         return (
@@ -68,78 +76,76 @@ function Product() {
         )
     }
 
+    function tableHeader(field) {
+        return (
+            <th onClick={() => {
+                if (currentSort[0] === field) {
+                    setProduct(sortObjectByKey(product.slice(), field, !currentSort[1]))
+                    setCurrentSort([field, !currentSort[1]])
+                } else {
+                    setCurrentSort([field, true])
+                    setProduct(sortObjectByKey(product.slice(), field, true))
+                }
+
+            }}>{field + "  " + (currentSort[0] === field ? currentSort[1] ? "▲" : "▼" : "⇕")}</th>
+        )
+    }
+
     useEffect(() => {
         db.collection("gmk").doc(gmkID).collection('sales').orderBy('date').get().then(querySnapshot => {
-            let dataByMonth = {}
+            let sumByMonth = {};
             for (let year = START_DATE[0]; year <= END_DATE[0]; year++) {
                 for (let month = 1; month <= 12; month++) {
-                    if (year === START_DATE[0] && month < START_DATE[1]) continue
-                    if (year === END_DATE[0] && month > END_DATE[1]) continue
+                    if (year === START_DATE[0] && month < START_DATE[1]) continue;
+                    if (year === END_DATE[0] && month > END_DATE[1]) continue;
 
-                    dataByMonth[[year, month]] = { "base": [], "bundle": [], "single": [], "other": [] }
+                    // sum, quantity
+                    sumByMonth[[year, month]] = { "base": [0, 0], "bundle": [0, 0], "single": [0, 0], "other": [0, 0] };
                 }
             }
+
+            let allData = [];
 
             querySnapshot.forEach(doc => {
                 let newData = doc.data();
                 let dateConvert = newData.date.toDate();
-                let key = [dateConvert.getFullYear(), dateConvert.getMonth() + 1]
-                dataByMonth[key][newData.category].push({
+                let key = [dateConvert.getFullYear(), dateConvert.getMonth() + 1];
+                allData.push({
                     id: doc.id,
+                    category: newData.category,
                     price: newData.price,
-                    link: newData.link,
+                    linkFull: newData.link,
+                    link: newData.link.split("/").slice(-2),
                     date: dateConvert,
                     sets: newData.sets.join(", "),
                 })
+
+                sumByMonth[key][newData.category][0] += newData.price;
+                sumByMonth[key][newData.category][1]++;
             })
 
             let averageByMonth = [];
-            for (let keyMonth in dataByMonth) {
-                let [y, m] = keyMonth.split(",")
+            for (let keyMonth in sumByMonth) {
+                let [y, m] = keyMonth.split(",");
                 let prettyDate = MONTHS[m - 1] + " " + y
-                let averages = { "ym": prettyDate }
-                let monthData = dataByMonth[keyMonth]
-                for (let keyCategory in monthData) {
-                    let categoryData = monthData[keyCategory]
-                    let sum = 0
-                    for (let i in categoryData) {
-                        sum += categoryData[i].price
-                    }
+                let monthAverage = { "ym": prettyDate };
+                let monthData = sumByMonth[keyMonth];
 
-                    let a = sum / categoryData.length
+                for (let keyCategory in monthData) {
+                    let categoryData = monthData[keyCategory];
+                    let a = categoryData[0] / categoryData[1];
                     if (!isNaN(a)) {
-                        averages[keyCategory] = Math.round(a)
+                        monthAverage[keyCategory] = Math.round(a);
                     }
                 }
-                averageByMonth.push(averages)
+
+                averageByMonth.push(monthAverage)
             }
 
-            setProduct(dataByMonth);
+            setProduct(allData);
             setAverage(averageByMonth)
         })
     }, []);
-
-    let dataToShow = []
-
-    for (let m in product) {
-        for (let c in product[m]) {
-            for (let i in product[m][c]) {
-                if (product[m][c][i].date >= dataShowParams.start && product[m][c][i].date <= dataShowParams.end && setsShow.includes(c)) {
-                    dataToShow.push(
-                        <tr key={product[m][c][i].id}>
-                            <td>{c}</td>
-                            <td>{product[m][c][i].price}</td>
-                            <td>{<a href={"https://www.reddit.com" + product[m][c][i].link} target="_blank" rel="noopener noreferrer">{product[m][c][i].link.split("/").slice(-2)}</a>}</td>
-                            <td>{product[m][c][i].date.toString()}</td>
-                            <td>{product[m][c][i].sets}</td>
-                        </tr>
-                    )
-                }
-            }
-        }
-    }
-
-
 
     return (
         <div>
@@ -148,13 +154,13 @@ function Product() {
                 height={400}
                 data={average}
                 onClick={(e, payload) => {
-                    if (e != null) {
+                    if (e !== null) {
                         let startD = new Date(Date.parse("1 " + e.activeLabel));
                         let endD = new Date(startD.getTime())
                         endD.setMonth(endD.getMonth() + 1);
                         setDataShowParams({ start: startD, end: endD });
 
-                        if (payload.target.className.baseVal != "recharts-dot") {
+                        if (payload.target.className.baseVal !== "recharts-dot") {
                             setSetsShow([...SETS]);
                         }
                     }
@@ -183,15 +189,29 @@ function Product() {
             <table>
                 <thead>
                     <tr>
-                        <th>Category</th>
-                        <th>Price</th>
-                        <th>Link</th>
-                        <th>Date</th>
-                        <th>Sets</th>
+                        {tableHeader("category")}
+                        {tableHeader("price")}
+                        {tableHeader("link")}
+                        {tableHeader("date")}
+                        {tableHeader("sets")}
                     </tr>
                 </thead>
                 <tbody>
-                    {dataToShow}
+                    {product.map((p) => {
+                        if (p.date >= dataShowParams.start && p.date <= dataShowParams.end && setsShow.includes(p.category)) {
+                            return (
+                                <tr key={p.id}>
+                                    <td>{p.category}</td>
+                                    <td>{p.price}</td>
+                                    <td>{<a href={"https://www.reddit.com" + p.linkFull} target="_blank" rel="noopener noreferrer">{p.link}</a>}</td>
+                                    <td>{p.date.toString()}</td>
+                                    <td>{p.sets}</td>
+                                </tr>
+                            )
+                        }
+
+                        return null
+                    })}
                 </tbody>
             </table>
         </div >
