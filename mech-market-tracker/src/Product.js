@@ -14,21 +14,29 @@ import {
     YAxis,
     CartesianGrid,
     Tooltip,
-    Legend
+    Legend,
+    ReferenceArea
 } from "recharts";
 
 import db from './firebase.js';
 
 const SETS = ["base", "bundle", "single", "other"];
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-const START_DATE = [2020, 1]
-const END_DATE = [2021, 5]
+const START_DATE = [2020, 1];
+const END_DATE = [2021, 5];
+const START_DATE_DT = new Date(START_DATE[0], START_DATE[1] - 1, 1, 0, 0, 0, 0);
+const END_DATE_DT = new Date(END_DATE[0], END_DATE[1] - 1, 1, 0, 0, 0, 0);
 
 function sortObjectByKey(obj, key, asc) {
     if (asc)
         return obj.sort((a, b) => a[key] < b[key] ? -1 : a[key] > b[key] ? 1 : 0)
     else
         return obj.sort((a, b) => b[key] < a[key] ? -1 : b[key] > a[key] ? 1 : 0)
+}
+
+function datePrettyFormat(ts) {
+    let d = new Date(ts);
+    return MONTHS[d.getMonth()] + " " + d.getFullYear()
 }
 
 function ProductPage() {
@@ -51,10 +59,14 @@ function Product() {
     const { productID } = useParams();
     const gmkID = "gmk " + productID
     const [product, setProduct] = useState([]);
-    const [average, setAverage] = useState({});
-    const [dataShowParams, setDataShowParams] = useState({ start: new Date(START_DATE[0], START_DATE[1] - 1, 1, 0, 0, 0, 0), end: new Date(END_DATE[0], END_DATE[1] - 1, 1, 0, 0, 0, 0) });
-    const [setsShow, setSetsShow] = useState([...SETS])
-    const [currentSort, setCurrentSort] = useState(['date', true])
+    const [average, setAverage] = useState([]);
+    const [dataShowParams, setDataShowParams] = useState({ start: START_DATE_DT, end: END_DATE_DT });
+    const [setsShow, setSetsShow] = useState([...SETS]);
+    const [currentSort, setCurrentSort] = useState(['date', true]);
+    const [clickLeft, setClickLeft] = useState("");
+    const [clickRight, setClickRight] = useState("");
+    const [graphLeft, setGraphLeft] = useState(START_DATE_DT);
+    const [graphRight, setGraphRight] = useState(END_DATE_DT);
 
     function buttonSetInclude(setName) {
         return (
@@ -89,6 +101,36 @@ function Product() {
 
             }}>{field + "  " + (currentSort[0] === field ? currentSort[1] ? "▲" : "▼" : "⇕")}</th>
         )
+    }
+
+    function zoom() {
+        let refLeft = clickLeft
+        let refRight = clickRight
+
+        if (refLeft === refRight || refRight === "") {
+            setClickLeft("");
+            setClickRight("");
+
+            if (refLeft !== "") {
+                let endD = new Date(refLeft);
+                endD.setMonth(endD.getMonth() + 1);
+                setDataShowParams({ start: refLeft, end: endD });
+            }
+            return;
+        }
+
+        if (refLeft > refRight) [refLeft, refRight] = [refRight, refLeft];
+
+        let endD = new Date(refRight);
+        endD.setMonth(endD.getMonth() + 1);
+
+        setGraphLeft(refLeft);
+        setGraphRight(refRight);
+        setClickLeft("");
+        setClickRight("");
+
+        setDataShowParams({ start: refLeft, end: endD });
+        return;
     }
 
     useEffect(() => {
@@ -128,7 +170,7 @@ function Product() {
             for (let keyMonth in sumByMonth) {
                 let [y, m] = keyMonth.split(",");
                 let prettyDate = MONTHS[m - 1] + " " + y
-                let monthAverage = { "ym": prettyDate };
+                let monthAverage = { "my": prettyDate, "epoch": new Date(y, m - 1, 1, 0, 0, 0, 0).getTime() };
                 let monthData = sumByMonth[keyMonth];
 
                 for (let keyCategory in monthData) {
@@ -143,7 +185,7 @@ function Product() {
             }
 
             setProduct(allData);
-            setAverage(averageByMonth)
+            setAverage(averageByMonth);
         })
     }, []);
 
@@ -154,32 +196,32 @@ function Product() {
                 height={400}
                 data={average}
                 onClick={(e, payload) => {
-                    if (e !== null) {
-                        let startD = new Date(Date.parse("1 " + e.activeLabel));
-                        let endD = new Date(startD.getTime())
-                        endD.setMonth(endD.getMonth() + 1);
-                        setDataShowParams({ start: startD, end: endD });
-
-                        if (payload.target.className.baseVal !== "recharts-dot") {
-                            setSetsShow([...SETS]);
-                        }
+                    if (e !== null && payload.target.className.baseVal !== "recharts-dot") {
+                        setSetsShow([...SETS]);
                     }
                 }}
+                onMouseDown={(e) => { if (e !== null) setClickLeft(e.activeLabel) }}
+                onMouseMove={(e) => { if (e !== null) clickLeft && setClickRight(e.activeLabel) }}
+                onMouseUp={() => zoom()}
             >
                 <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="ym" />
+                <XAxis dataKey="epoch" type="number" scale="time" domain={[graphLeft, graphRight]} allowDataOverflow />
                 <YAxis />
                 <Tooltip />
                 <Legend />
-                <Line type="linear" dataKey="base" stroke="#4053d3" activeDot={{ onClick: (e, payload) => setSetsShow([payload.dataKey]) }} />
-                <Line type="linear" dataKey="bundle" stroke="#b51d14" activeDot={{ onClick: (e, payload) => setSetsShow([payload.dataKey]) }} />
-                <Line type="linear" dataKey="single" stroke="#00b25d" activeDot={{ onClick: (e, payload) => setSetsShow([payload.dataKey]) }} />
-                <Line type="linear" dataKey="other" stroke="#00beff" activeDot={{ onClick: (e, payload) => setSetsShow([payload.dataKey]) }} />
+                <Line type="natural" dataKey="base" stroke="#4053d3" activeDot={{ onClick: (e, payload) => setSetsShow([payload.dataKey]) }} />
+                <Line type="natural" dataKey="bundle" stroke="#b51d14" activeDot={{ onClick: (e, payload) => setSetsShow([payload.dataKey]) }} />
+                <Line type="natural" dataKey="single" stroke="#00b25d" activeDot={{ onClick: (e, payload) => setSetsShow([payload.dataKey]) }} />
+                <Line type="natural" dataKey="other" stroke="#00beff" activeDot={{ onClick: (e, payload) => setSetsShow([payload.dataKey]) }} />
+                {clickLeft && clickRight ? (
+                    <ReferenceArea x1={clickLeft} x2={clickRight} strokeOpacity={0.3} />
+                ) : null}
             </LineChart>
             <button className="resetSetButton" onClick={() => {
-                setDataShowParams({ start: new Date(START_DATE[0], START_DATE[1] - 1, 1, 0, 0, 0, 0), end: new Date(END_DATE[0], END_DATE[1] - 1, 1, 0, 0, 0, 0) })
+                setDataShowParams({ start: START_DATE_DT, end: END_DATE_DT })
                 setSetsShow([...SETS]);
-
+                setGraphLeft(START_DATE_DT);
+                setGraphRight(END_DATE_DT);
             }}>
                 Reset
             </button>
