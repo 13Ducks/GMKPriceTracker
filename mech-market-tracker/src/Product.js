@@ -15,7 +15,7 @@ import {
     CartesianGrid,
     Tooltip,
     Legend,
-    ReferenceArea
+    ReferenceArea,
 } from "recharts";
 
 import db from './firebase.js';
@@ -23,7 +23,7 @@ import db from './firebase.js';
 const SETS = ["base", "bundle", "single", "other"];
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 const START_DATE = [2020, 1];
-const END_DATE = [2021, 5];
+const END_DATE = [2021, 4];
 const START_DATE_DT = new Date(START_DATE[0], START_DATE[1] - 1, 1, 0, 0, 0, 0);
 const END_DATE_DT = new Date(END_DATE[0], END_DATE[1] - 1, 1, 0, 0, 0, 0);
 
@@ -169,8 +169,7 @@ function Product() {
             let averageByMonth = [];
             for (let keyMonth in sumByMonth) {
                 let [y, m] = keyMonth.split(",");
-                let prettyDate = MONTHS[m - 1] + " " + y
-                let monthAverage = { "my": prettyDate, "epoch": new Date(y, m - 1, 1, 0, 0, 0, 0).getTime() };
+                let monthAverage = { "epoch": new Date(y, m - 1, 1, 0, 0, 0, 0).getTime() };
                 let monthData = sumByMonth[keyMonth];
 
                 for (let keyCategory in monthData) {
@@ -178,6 +177,7 @@ function Product() {
                     let a = categoryData[0] / categoryData[1];
                     if (!isNaN(a)) {
                         monthAverage[keyCategory] = Math.round(a);
+                        monthAverage[keyCategory + "_q"] = categoryData[1];
                     }
                 }
 
@@ -205,18 +205,21 @@ function Product() {
                 onMouseUp={() => zoom()}
             >
                 <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="epoch" type="number" scale="time" domain={[graphLeft, graphRight]} allowDataOverflow />
+                <XAxis dataKey="epoch" type="number" scale="time" padding={{ left: 25, right: 25 }} interval={0} angle={30} tickMargin={15} height={50} domain={[graphLeft, graphRight]} allowDataOverflow tickFormatter={datePrettyFormat} />
                 <YAxis />
-                <Tooltip />
+                <Tooltip labelFormatter={datePrettyFormat} formatter={(value, name, props) => {
+                    return `$${props.payload[props.dataKey]}, ${props.payload[props.dataKey + "_q"]} units`
+                }} />
                 <Legend />
-                <Line type="natural" dataKey="base" stroke="#4053d3" activeDot={{ onClick: (e, payload) => setSetsShow([payload.dataKey]) }} />
-                <Line type="natural" dataKey="bundle" stroke="#b51d14" activeDot={{ onClick: (e, payload) => setSetsShow([payload.dataKey]) }} />
-                <Line type="natural" dataKey="single" stroke="#00b25d" activeDot={{ onClick: (e, payload) => setSetsShow([payload.dataKey]) }} />
-                <Line type="natural" dataKey="other" stroke="#00beff" activeDot={{ onClick: (e, payload) => setSetsShow([payload.dataKey]) }} />
+                <Line type="linear" dataKey="base" stroke="#4053d3" activeDot={{ onClick: (e, payload) => setSetsShow([payload.dataKey]) }} />
+                <Line type="linear" dataKey="bundle" stroke="#b51d14" activeDot={{ onClick: (e, payload) => setSetsShow([payload.dataKey]) }} />
+                <Line type="linear" dataKey="single" stroke="#00b25d" activeDot={{ onClick: (e, payload) => setSetsShow([payload.dataKey]) }} />
+                <Line type="linear" dataKey="other" stroke="#00beff" activeDot={{ onClick: (e, payload) => setSetsShow([payload.dataKey]) }} />
                 {clickLeft && clickRight ? (
                     <ReferenceArea x1={clickLeft} x2={clickRight} strokeOpacity={0.3} />
                 ) : null}
             </LineChart>
+
             <button className="resetSetButton" onClick={() => {
                 setDataShowParams({ start: START_DATE_DT, end: END_DATE_DT })
                 setSetsShow([...SETS]);
