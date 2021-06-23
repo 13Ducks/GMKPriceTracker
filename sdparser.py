@@ -1,119 +1,35 @@
 import glob
-from parse import parse_prices
 import pandas as pd
-import ast
-from datetime import datetime
-from scipy import stats
-import numpy as np
-import math
+
+MIN_Z_SCORE = 3
 
 sales = glob.glob("sales/*")
-allbase = pd.DataFrame()
-first = True
-for s in sales:
-    print(s)
-    df = pd.read_csv(s)
-    df["date"] = pd.to_datetime(df["date"])
-    #print(df)
-    if first:
-        allbase = df
-        first = False
-    else:
-        allbase = allbase.append(df)
-        
-#print(allbase)
-grouped = allbase.sort_values(by=['product'])
-#grouped.to_csv("sales/grouped.csv")
-grouped = grouped.groupby("product")
-allBases = pd.DataFrame()
-trashBase = pd.DataFrame()
-firstAllBase = False
-firstshittybase = False
-#print(type(grouped))
+
+all_df = pd.concat([pd.read_csv(file) for file in sales])
+all_df["date"] = pd.to_datetime(all_df["date"])
+grouped = all_df.groupby("product")
+
+good_base = []
+bad_base = []
 
 for name, group in grouped:
-    preFilterBase = []
-    isFirstBase = True
-    for row in group.itertuples():
-        if row.category == 'base':
-            preFilterBase.append(row)
-    unFilteredBase = pd.DataFrame(preFilterBase)
-    #print(basesToAdd)
-    sd = None
-    mean = None
-    goodBase = []
-    shittyassBase = []
-    if not unFilteredBase.empty:
-        #print(unFilteredBase)
-        unFilteredBase.set_index(['date'], inplace=True)
-        unFilteredBase = unFilteredBase.sort_index()
-        unFilteredBase['RollingMean']=unFilteredBase['price'].rolling('60d', min_periods=0).mean()
-        unFilteredBase['RollingSD']=unFilteredBase['price'].rolling('60d', min_periods=0).std()
-        mean = unFilteredBase['price'].rolling('60d', min_periods=0).mean()
-        sd = unFilteredBase['price'].rolling('60d', min_periods=0).std()
-        #sd = unFilteredBase['price'].std(axis=0)
-        #mean = unFilteredBase['price'].mean(axis=0)
-        #print(mean)
-    if not unFilteredBase.empty:
-        # print(unFilteredBase['RollingMean'])
-        # print(unFilteredBase['RollingSD'])
-        # print(sd)
-        # print(mean)
-        for index, x in unFilteredBase.iterrows():
-            print(x)
-            print(type(x['RollingSD']))
-            z = 0
+    base_df = group[group["category"] == "base"]
+    base_df.set_index(["date"], inplace=True)
+    base_df.sort_index(inplace=True)
+    base_df["rolling_mean"] = base_df["price"].rolling("90d", min_periods=0).mean()
+    base_df["rolling_sd"] = base_df["price"].rolling("90d", min_periods=0).std()
 
-            if not math.isnan(x['RollingSD']):
-                sds = x['RollingSD']
-                if sds == 0:
-                    sds = 1
-                z = (x['price']-x['RollingMean'])/sds
-            if z <3:
-                print(x.drop(['RollingMean', 'RollingSD'], axis=0))
-                goodBase.append(x.drop(['RollingMean', 'RollingSD'], axis=0))
-            else:
-                shittyassBase.append(x)
-                
-            
-        
-            # z = (x['price'] - mean)/sd
-            # #print(abs(z))
-            # if abs(z) > 2:
-            #     shittyassBase.append(x)
-            # else:
-                #goodBase.append(x)
-                
+    base_df["rolling_sd"].fillna(0, inplace=True)
+    base_df["rolling_sd"].replace(0, 1, inplace=True)
+    base_df["z_score"] = (
+        (base_df["price"] - base_df["rolling_mean"]) / base_df["rolling_sd"]
+    ).abs()
 
-    #print(basesToAdd)
-    #basesToAdd[(np.abs(stats.zscore(df[6])) < 3)]
-    if firstAllBase:
-        allBases = pd.DataFrame(goodBase)
-        firstAllBase = False
-    else:
-        allBases = allBases.append(goodBase)
-    if shittyassBase:
-        if firstshittybase:
-            trashBase = pd.DataFrame(shittyassBase)
-            firstshittybase = False
-        else:
-            trashBase = trashBase.append(shittyassBase)
+    good_base.append(base_df[base_df["z_score"] < MIN_Z_SCORE])
+    bad_base.append(base_df[base_df["z_score"] >= MIN_Z_SCORE])
 
-allBases.to_csv("newnewnew.csv")
-trashBase.to_csv("badbadbad.csv")
-    #print(curBases)
-    #after math shit and removing outlier
+good_base = pd.concat(good_base)
+bad_base = pd.concat(bad_base)
 
-        
-
-
-    #grouped = df.groupby("product")
-    # for name, group in grouped:
-    #     for row in group.itertuples():
-    #         data = {
-    #             u"link": row.link,
-    #             u"sets": ast.literal_eval(row.sets),
-    #             u"price": row.price,
-    #             u"category": row.category,
-    #             u"date": row.date,
-    #         }
+good_base.to_csv("goodv1.csv")
+bad_base.to_csv("badv1.csv")
