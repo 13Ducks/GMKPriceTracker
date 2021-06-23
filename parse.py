@@ -31,27 +31,28 @@ def parse_prices(filename):
     df["post_lower"] = df["post"].str.lower()
     df["title_lower"] = df["title"].str.lower()
 
-    sets = [
-        "base",
-        "nov",
-        "alpha",
-        "accent",
-        "bars",
-        "spacebar",
-        "cable",
-        "light base",
-        "dark base",
-        "deskmat",
-        "desk mat",
-        "cable",
-        "rama",
-        "40s",
-        "40's",
-        "fourties",
-        "mods",
-        "extension",
-        "numpad",
-    ]
+    sets = {
+        "base": "base",
+        "nov": "novelties",
+        "alpha": "alpha",
+        "accent": "accent",
+        "bars": "spacebars",
+        "spacebar": "spacebars",
+        "cable": "cable",
+        "light base": "light base",
+        "dark base": "dark base",
+        "deskmat": "deskmat",
+        "desk mat": "deskmat",
+        "deskpad": "deskmat",
+        "desk pad": "deskmat",
+        "rama": "rama",
+        "40s": "40s",
+        "40's": "40s",
+        "fourties": "40s",
+        "mods": "mods",
+        "extension": "extension",
+        "numpad": "numpad",
+    }
 
     sales_data = []
     strange_data = []
@@ -90,26 +91,18 @@ def parse_prices(filename):
 
                         curr_str = matches[i]
 
-                        kits = []
+                        kits = set()
                         removeBase = False
 
-                        for x in sets:
+                        for x in sets.keys():
                             if x in curr_str:
-                                if x == "nov":
-                                    kits.append("novelties")
-                                elif x == "light base" or x == "dark base":
+                                kits.add(sets[x])
+
+                                if x == "light base" or x == "dark base":
                                     removeBase = True
-                                    kits.insert(0, x)
-                                elif x == "bars" or x == "spacebar":
-                                    if "spacebars" not in kits:
-                                        kits.append("spacebars")
-                                elif x in ["40s", "40's", "fourties"]:
-                                    kits.append("40s")
-                                else:
-                                    kits.append(x)
 
                         if i == 0 and not kits:
-                            kits.append("base")
+                            kits.add("base")
 
                         if removeBase and "base" in kits:
                             kits.remove("base")
@@ -125,10 +118,10 @@ def parse_prices(filename):
                                         if x == "olivia++":
                                             continue
 
-                                        kits.insert(0, "base")
+                                        kits.add("base")
                                         break
 
-                            temp_data["products"] = kits
+                            temp_data["products"] = list(kits)
                             temp_data["str"] = curr_str
                             if not addToWeird:
                                 temp_data["price"] = curr_price
@@ -182,14 +175,14 @@ def parse_prices(filename):
                                     ):
                                         remove_entry = True
                             elif curr_price <= 100:
-                                if(
-                                    "base" in temp_data["products"]
-                                ):
+                                if "base" in temp_data["products"]:
                                     addToWeird = True
 
                             else:
                                 if not addToWeird:
-                                    temp_data["price"] = min(temp_data["price"], curr_price)
+                                    temp_data["price"] = min(
+                                        temp_data["price"], curr_price
+                                    )
 
                     if temp_data["products"]:
                         temp_data["category"] = get_category(temp_data["products"])
@@ -197,7 +190,7 @@ def parse_prices(filename):
                     if not remove_entry:
                         if addToWeird:
                             strange_data.append(
-                                    [
+                                [
                                     row[0],
                                     product_name,
                                     temp_data["products"],
@@ -246,7 +239,8 @@ def parse_prices(filename):
 
     return (sales_df, manual_df)
 
-if __name__ == '__main__':
-    a = parse_prices('april2020.csv')
-    a[0].to_csv("sales/good_data.csv")
-    a[1].to_csv("sales/bad_data.csv")
+
+if __name__ == "__main__":
+    a = parse_prices("april2020.csv")
+    a[0].to_csv("sales/good_data2.csv")
+    a[1].to_csv("sales/bad_data2.csv")
