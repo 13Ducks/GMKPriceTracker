@@ -5,6 +5,7 @@ import ast
 from datetime import datetime
 from scipy import stats
 import numpy as np
+import math
 
 sales = glob.glob("sales/*")
 allbase = pd.DataFrame()
@@ -43,18 +44,45 @@ for name, group in grouped:
     goodBase = []
     shittyassBase = []
     if not unFilteredBase.empty:
-        sd = unFilteredBase['price'].std(axis=0)
-        mean = unFilteredBase['price'].mean(axis=0)
-    if sd and str(sd) != 'nan':
-        #print(sd)
+        #print(unFilteredBase)
+        unFilteredBase.set_index(['date'], inplace=True)
+        unFilteredBase = unFilteredBase.sort_index()
+        unFilteredBase['RollingMean']=unFilteredBase['price'].rolling('60d', min_periods=0).mean()
+        unFilteredBase['RollingSD']=unFilteredBase['price'].rolling('60d', min_periods=0).std()
+        mean = unFilteredBase['price'].rolling('60d', min_periods=0).mean()
+        sd = unFilteredBase['price'].rolling('60d', min_periods=0).std()
+        #sd = unFilteredBase['price'].std(axis=0)
+        #mean = unFilteredBase['price'].mean(axis=0)
         #print(mean)
+    if not unFilteredBase.empty:
+        # print(unFilteredBase['RollingMean'])
+        # print(unFilteredBase['RollingSD'])
+        # print(sd)
+        # print(mean)
         for index, x in unFilteredBase.iterrows():
-            z = (x['price'] - mean)/sd 
-            print(abs(z))
-            if abs(z) > 2:
-                shittyassBase.append(x)
+            print(x)
+            print(type(x['RollingSD']))
+            z = 0
+
+            if not math.isnan(x['RollingSD']):
+                sds = x['RollingSD']
+                if sds == 0:
+                    sds = 1
+                z = (x['price']-x['RollingMean'])/sds
+            if z <3:
+                print(x.drop(['RollingMean', 'RollingSD'], axis=0))
+                goodBase.append(x.drop(['RollingMean', 'RollingSD'], axis=0))
             else:
-                goodBase.append(x)
+                shittyassBase.append(x)
+                
+            
+        
+            # z = (x['price'] - mean)/sd
+            # #print(abs(z))
+            # if abs(z) > 2:
+            #     shittyassBase.append(x)
+            # else:
+                #goodBase.append(x)
                 
 
     #print(basesToAdd)
@@ -71,8 +99,8 @@ for name, group in grouped:
         else:
             trashBase = trashBase.append(shittyassBase)
 
-allBases.to_csv("allbasesgroupedfilteredREAL.csv")
-trashBase.to_csv("shittyassbase.csv")
+allBases.to_csv("newnewnew.csv")
+trashBase.to_csv("badbadbad.csv")
     #print(curBases)
     #after math shit and removing outlier
 
