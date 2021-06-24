@@ -55,7 +55,7 @@ def parse_prices(filename):
     }
 
     sales_data = []
-    strange_data = []
+    too_low_data = []
 
     def match_product(row):
         s = row.post_lower.split("\n")
@@ -73,8 +73,7 @@ def parse_prices(filename):
                 temp_data = {}
 
                 if len(matches) > 1:
-                    remove_entry = False
-                    addToWeird = False
+                    too_low = False
                     for i in range(0, len(matches) - 1, 3):
                         curr_price = int(
                             matches[i + 1][1:]
@@ -92,19 +91,19 @@ def parse_prices(filename):
                         curr_str = matches[i]
 
                         kits = set()
-                        removeBase = False
+                        remove_base = False
 
                         for x in sets.keys():
                             if x in curr_str:
                                 kits.add(sets[x])
 
                                 if x == "light base" or x == "dark base":
-                                    removeBase = True
+                                    remove_base = True
 
                         if i == 0 and not kits:
                             kits.add("base")
 
-                        if removeBase and "base" in kits:
+                        if remove_base and "base" in kits:
                             kits.remove("base")
 
                         if i == 0:
@@ -123,40 +122,38 @@ def parse_prices(filename):
 
                             temp_data["products"] = list(kits)
                             temp_data["str"] = curr_str
-                            if not addToWeird:
+                            if not too_low:
                                 temp_data["price"] = curr_price
 
                         if temp_data["products"]:
                             temp_data["category"] = get_category(temp_data["products"])
 
                         if kits and i > 0:
-                            if not remove_entry:
-                                if addToWeird:
-                                    strange_data.append(
-                                        [
-                                            row[0],
-                                            product_name,
-                                            temp_data["products"],
-                                            temp_data["price"],
-                                            temp_data["category"],
-                                            row.date,
-                                        ]
-                                    )
-                                    addToWeird = False
-                                else:
-                                    sales_data.append(
-                                        [
-                                            row[0],
-                                            product_name,
-                                            temp_data["products"],
-                                            temp_data["price"],
-                                            temp_data["category"],
-                                            row.date,
-                                        ]
-                                    )
+                            if too_low:
+                                too_low_data.append(
+                                    [
+                                        row[0],
+                                        product_name,
+                                        temp_data["products"],
+                                        temp_data["price"],
+                                        temp_data["category"],
+                                        row.date,
+                                    ]
+                                )
+                                too_low = False
                             else:
-                                remove_entry = False
-                            temp_data["products"] = kits
+                                sales_data.append(
+                                    [
+                                        row[0],
+                                        product_name,
+                                        temp_data["products"],
+                                        temp_data["price"],
+                                        temp_data["category"],
+                                        row.date,
+                                    ]
+                                )
+
+                            temp_data["products"] = list(kits)
                             temp_data["str"] = curr_str
                             temp_data["price"] = curr_price
                         else:
@@ -173,13 +170,9 @@ def parse_prices(filename):
                                         "base" in temp_data["products"]
                                         and temp_data["price"] <= 50
                                     ):
-                                        remove_entry = True
-                            elif curr_price <= 100:
-                                if "base" in temp_data["products"]:
-                                    addToWeird = True
-
+                                        too_low = True
                             else:
-                                if not addToWeird:
+                                if not too_low:
                                     temp_data["price"] = min(
                                         temp_data["price"], curr_price
                                     )
@@ -187,32 +180,29 @@ def parse_prices(filename):
                     if temp_data["products"]:
                         temp_data["category"] = get_category(temp_data["products"])
 
-                    if not remove_entry:
-                        if addToWeird:
-                            strange_data.append(
-                                [
-                                    row[0],
-                                    product_name,
-                                    temp_data["products"],
-                                    temp_data["price"],
-                                    temp_data["category"],
-                                    row.date,
-                                ]
-                            )
-                            addToWeird = False
-                        else:
-                            sales_data.append(
-                                [
-                                    row[0],
-                                    product_name,
-                                    temp_data["products"],
-                                    temp_data["price"],
-                                    temp_data["category"],
-                                    row.date,
-                                ]
-                            )
+                    if too_low:
+                        too_low_data.append(
+                            [
+                                row[0],
+                                product_name,
+                                temp_data["products"],
+                                temp_data["price"],
+                                temp_data["category"],
+                                row.date,
+                            ]
+                        )
+                        too_low = False
                     else:
-                        remove_entry = True
+                        sales_data.append(
+                            [
+                                row[0],
+                                product_name,
+                                temp_data["products"],
+                                temp_data["price"],
+                                temp_data["category"],
+                                row.date,
+                            ]
+                        )
 
     for row in df.itertuples():
         match_product(row)
@@ -230,17 +220,17 @@ def parse_prices(filename):
     sales_df["product"] = sales_df["product"].apply(remove_accents)
     sales_df["product"].replace(r"\W+$", "", regex=True, inplace=True)
 
-    manual_df = pd.DataFrame(
-        strange_data, columns=["link", "product", "sets", "price", "category", "date"]
+    too_low_df = pd.DataFrame(
+        too_low_data, columns=["link", "product", "sets", "price", "category", "date"]
     )
-    manual_df["date"] = pd.to_datetime(manual_df["date"], unit="s")
-    manual_df["product"] = manual_df["product"].apply(remove_accents)
-    manual_df["product"].replace(r"\W+$", "", regex=True, inplace=True)
+    too_low_df["date"] = pd.to_datetime(too_low_df["date"], unit="s")
+    too_low_df["product"] = too_low_df["product"].apply(remove_accents)
+    too_low_df["product"].replace(r"\W+$", "", regex=True, inplace=True)
 
-    return (sales_df, manual_df)
+    return (sales_df, too_low_df)
 
 
 if __name__ == "__main__":
     a = parse_prices("april2020.csv")
-    a[0].to_csv("sales/good_data2.csv")
-    a[1].to_csv("sales/bad_data2.csv")
+    a[0].to_csv("good_data2.csv")
+    a[1].to_csv("bad_data2.csv")
