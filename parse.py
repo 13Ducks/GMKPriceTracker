@@ -6,7 +6,7 @@ money_regex = r"([£€\$]\d+)|(\d+[£€\$])"
 euro_to_usd = 1.2
 pound_to_usd = 1.4
 
-bad_words = ["stab", "screw", "snap in", "clip in", "pcb mount", "plate mount"]
+bad_words = ["stab", "screw", "snap in", "clip in", "pcb mount", "plate mount", "kbd", "pcb", "built", "polycarb", "pc", "koyu"]
 
 
 def get_category(products):
