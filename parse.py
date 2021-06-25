@@ -55,7 +55,7 @@ def parse_prices(filename):
     }
 
     sales_data = []
-    too_low_data = []
+    bad_data = []
 
     def match_product(row):
         s = row.post_lower.split("\n")
@@ -100,6 +100,9 @@ def parse_prices(filename):
                                 if x == "light base" or x == "dark base":
                                     remove_base = True
 
+                        t = temp_data.get("products", [])
+                        bad_bundle = "bundle" in curr_str and not kits and not t
+
                         if i == 0 and not kits:
                             kits.add("base")
 
@@ -129,8 +132,8 @@ def parse_prices(filename):
                             temp_data["category"] = get_category(temp_data["products"])
 
                         if kits and i > 0:
-                            if too_low:
-                                too_low_data.append(
+                            if too_low or bad_bundle:
+                                bad_data.append(
                                     [
                                         row[0],
                                         product_name,
@@ -180,8 +183,8 @@ def parse_prices(filename):
                     if temp_data["products"]:
                         temp_data["category"] = get_category(temp_data["products"])
 
-                    if too_low:
-                        too_low_data.append(
+                    if too_low or bad_bundle:
+                        bad_data.append(
                             [
                                 row[0],
                                 product_name,
@@ -220,14 +223,14 @@ def parse_prices(filename):
     sales_df["product"] = sales_df["product"].apply(remove_accents)
     sales_df["product"].replace(r"\W+$", "", regex=True, inplace=True)
 
-    too_low_df = pd.DataFrame(
-        too_low_data, columns=["link", "product", "sets", "price", "category", "date"]
+    bad_df = pd.DataFrame(
+        bad_data, columns=["link", "product", "sets", "price", "category", "date"]
     )
-    too_low_df["date"] = pd.to_datetime(too_low_df["date"], unit="s")
-    too_low_df["product"] = too_low_df["product"].apply(remove_accents)
-    too_low_df["product"].replace(r"\W+$", "", regex=True, inplace=True)
+    bad_df["date"] = pd.to_datetime(bad_df["date"], unit="s")
+    bad_df["product"] = bad_df["product"].apply(remove_accents)
+    bad_df["product"].replace(r"\W+$", "", regex=True, inplace=True)
 
-    return (sales_df, too_low_df)
+    return (sales_df, bad_df)
 
 
 if __name__ == "__main__":
