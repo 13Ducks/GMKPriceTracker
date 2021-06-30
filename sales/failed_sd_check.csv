@@ -1,0 +1,101 @@
+,date,link,product,sets,price,category,rolling_mean,rolling_sd,z_score
+0,2020-08-24 03:44:32,/r/mechmarket/comments/ifhpsq/usco_hvintage_keyboard_deskmats_tangerines_62g/,gmk 8008,['base'],60,base,274.8305084745763,71.22914759407398,3.016047723873779
+1,2020-09-04 16:41:02,/r/mechmarket/comments/imjdmj/usma_h_space65_mark1_r1_w_lubed_and_filmed/,gmk 8008,['base'],725,base,287.2,90.13346113584305,4.857241633494774
+2,2020-12-08 17:57:37,/r/mechmarket/comments/k995dw/euuk_h_rama_x_sandstorm_artisan_keycap_gmk/,gmk 8008,['base'],70,base,298.5416666666667,83.58124356195187,2.7343654739626797
+3,2020-12-14 19:35:03,/r/mechmarket/comments/kd4nsb/euuk_h_gmk_firefly_accents_gmk_8008_accents/,gmk 8008,['base'],56,base,291.34615384615387,93.72510541266617,2.5110257578259154
+4,2020-09-12 08:32:30,/r/mechmarket/comments/ir8y76/au_h_sa_arcane_gmk_peaches_n_cream_gmk_night/,gmk 8008,"['accent', 'base']",550,bundle,373.1578947368421,68.15445135694432,2.5947256817751394
+5,2020-10-04 01:41:13,/r/mechmarket/comments/j4qw11/usfl_h_rama_artisans_bleached_9009_8008_kuroshiro/,gmk 8008,"['base', 'rama']",150,bundle,346.1904761904762,76.9724749813978,2.548839390157199
+6,2021-03-28 19:58:29,/r/mechmarket/comments/mf8kx8/uspah_deskmats_bento_r2_8008_modo_sets_kitty_kat/,gmk 8008,['deskmat'],340,single,85.9090909090909,85.61010985328137,2.968001203670573
+7,2020-07-28 19:45:03,/r/mechmarket/comments/hzli16/usny_h_gmk_9009_r3_base_aesthetic_deskmat_w_paypal/,gmk 9009,['base'],70,base,223.74285714285713,52.17467430330029,2.9466951005601616
+8,2020-08-04 23:53:16,/r/mechmarket/comments/i3upwv/usny_h_gmk_nines_sealed_gmk_camping_sealed_w/,gmk 9009,['base'],55,base,216.2173913043478,52.12417355315129,3.0929486323644753
+9,2020-09-23 15:34:52,/r/mechmarket/comments/iycexv/usfl_h_noxary_pink_pc_2682_gmk_dualshot_gmk_9009/,gmk 9009,['base'],30,base,204.33802816901408,51.49173128126548,3.3857480381989884
+10,2020-10-16 21:10:13,/r/mechmarket/comments/jci4fb/euukh_brutal60_wkl_black_h1_switches_circles/,gmk 9009,['base'],55,base,190.5441176470588,45.098377977758375,3.0055209017474307
+11,2021-01-19 13:56:22,/r/mechmarket/comments/l0ka1m/eudk_h_gmk_9009_r3_base_norde_obscure_addition/,gmk 9009,['base'],350,base,176.72727272727272,62.106396976918184,2.7899336575123495
+12,2020-10-04 21:17:28,/r/mechmarket/comments/j56s7w/ustn_h_ewhite_nk65_v2_gmk_analog_dreams_base/,gmk analog,['novelties'],265,single,93.07142857142857,53.598886736019615,3.2076892245045774
+13,2020-05-06 21:07:26,/r/mechmarket/comments/gesm9i/ustx_h_gmk_bento_spacebars_rama_salmon_bento/,gmk bento,['base'],60,base,304.04761904761904,72.24297626100144,3.378150121693727
+14,2021-03-11 09:38:50,/r/mechmarket/comments/m2mjav/uk_h_infinikey_aether_gmk_bleached_w_paypal/,gmk bleached,['base'],168,base,214.69565217391303,18.655817475835775,2.5030075596738803
+15,2021-03-13 03:24:35,/r/mechmarket/comments/m3y2d5/cnh_kbd_d60_ewhite_kbd8x_mkii_black_space65/,gmk bleached,['base'],100,base,209.91666666666666,29.682254494631263,3.703110445554184
+16,2021-03-09 02:22:00,/r/mechmarket/comments/m0whqj/usoh_h_gmk_botanical_base_novelties_spacebars/,gmk botanical,['base'],550,base,314.8076923076923,92.1029941883625,2.553579389735247
+17,2020-08-09 22:48:46,/r/mechmarket/comments/i6syqh/usct_h_gmk_cafe_base_dark_alphas_spacebars_m6c/,gmk cafe,['base'],430,base,316.15384615384613,45.51345250554344,2.5013737165355154
+18,2020-09-10 13:38:15,/r/mechmarket/comments/iq3fzy/usvah_gmk_cafe_bundle_w_paypal/,gmk cafe,['base'],550,base,318.7307692307692,67.27053303924843,3.437897996650311
+19,2020-10-24 19:26:32,/r/mechmarket/comments/jhezi8/usny_h_rama_u80a_lake_hotswap_built_kbd67_mk2_w/,gmk cafe,['base'],700,base,325.9736842105263,84.02364108829978,4.451441415118066
+20,2020-10-30 21:32:37,/r/mechmarket/comments/jl5q2a/usca_h_gmk_cafe_base_spacebars_gmk_umbra_epbt_wob/,gmk cafe,['base'],75,base,317.3777777777778,85.53183588287435,2.8337726564139847
+21,2020-12-26 17:07:17,/r/mechmarket/comments/kkluic/usnjh_ifk_cafe_base_kat_eternal_desoldered_drop/,gmk cafe,['base'],70,base,296.5970149253731,68.75605972225348,3.2956660960609567
+22,2020-12-30 04:11:49,/r/mechmarket/comments/kmuoyy/ustx_h_gmk_kits_cafe_deskmat_fjell_case_tofu_65/,gmk cafe,['base'],100,base,292.30882352941177,72.58926719583347,2.6492735215330847
+23,2021-04-22 19:23:06,/r/mechmarket/comments/mwciwk/usca_h_kbd67mkii_v2_black_pc_gmk_cafe_bundle_gmk/,gmk cafe,['base'],640,base,341.5,107.29114077540973,2.782149559066053
+24,2020-10-28 01:03:58,/r/mechmarket/comments/jje84p/uscahgmk_cafe_basespacerama_gmk_burgundy_r3_sa_r3/,gmk cafe,"['base', 'rama']",80,bundle,326.22727272727275,94.1912602447462,2.6141201645192638
+25,2021-01-07 21:35:06,/r/mechmarket/comments/ksndyb/uscah_gmk_rudy_cafe_finer_things_minimal_pristine/,gmk cafe,['rama'],590,single,138.57142857142858,104.31124693403774,4.327707555006382
+26,2020-04-22 02:49:28,/r/mechmarket/comments/g5t9ml/usmn_h_acrylic_alice_malice_w_frosted_bottom/,gmk calm,['base'],380,base,185.83333333333334,72.07424623051544,2.6939812321541647
+27,2020-09-15 05:12:20,/r/mechmarket/comments/it2bzy/au_h_gmk_first_love_gmk_camping_r2_w_paypal/,gmk camping,['base'],325,base,248.10344827586206,27.00574651491028,2.8474144079550694
+28,2020-09-15 18:06:16,/r/mechmarket/comments/ite422/euuk_h_olkb_planck_ibm_model_m_mt3_godspeed_yotd/,gmk camping,['base'],70,base,242.16666666666666,41.97050140879604,4.102087439693645
+29,2021-01-30 19:38:58,/r/mechmarket/comments/l8tplx/usga_h_gmk_camping_r2_mt3_godspeed_w_paypal/,gmk camping,['base'],425,base,270.4166666666667,54.541824374149996,2.834216403780542
+30,2020-12-27 05:21:55,/r/mechmarket/comments/kkxxlb/vn_h_gmk_8008_camping_matrix_sa_carbon_vim_kit/,gmk camping,"['novelties', 'spacebars', 'base', 'alpha']",600,bundle,335.0,90.0991517321731,2.9412041612526343
+31,2021-02-13 23:40:47,/r/mechmarket/comments/ljcao4/usva_h_camping_r2_base_spacebars_novelties/,gmk camping,['cable'],340,single,90.0,79.24119299118777,3.154924737538996
+32,2021-03-13 13:39:45,/r/mechmarket/comments/m46h2g/uspa_h_voice65_blurple_w_gmk_dark_base_paypal/,gmk dark,['dark base'],575,base,266.4166666666667,113.36783120230864,2.72196557048583
+33,2020-12-18 00:52:30,/r/mechmarket/comments/kfai6d/usilh_gmk_darling_base_rama_x_and_helix_gmk/,gmk darling,['base'],150,base,324.12,64.25361209042389,2.709886562563386
+34,2020-12-29 19:00:38,/r/mechmarket/comments/kmkhga/usny_h_gmk_darling_basenovspace_rama_x_helix_set/,gmk darling,['base'],825,base,344.74074074074076,114.62433376791287,4.1898543134101915
+35,2020-12-16 04:48:47,/r/mechmarket/comments/ke2kly/usca_h_gmk_dmg_r2_basespacebarspocket_40_w_paypal/,gmk dmg,['base'],55,base,257.5,51.28609127136456,3.9484389428029054
+36,2020-12-30 19:39:42,/r/mechmarket/comments/kn943c/usny_h_rama_m65a_percent_maze_gmk_dmg_base/,gmk dmg,['base'],60,base,249.79166666666666,64.07331342106183,2.9621016384690257
+37,2020-05-11 19:45:36,/r/mechmarket/comments/ghuxzm/usnc_h_gmk_dots_bundle_base_nomads_brass_cap/,gmk dots,['base'],65,base,282.5,72.73111311409178,2.990467087432201
+38,2020-05-13 20:04:53,/r/mechmarket/comments/gj6kj5/usnc_h_gmk_dots_nomad_kit_70x_62g_tangerines_70x/,gmk dots,['base'],60,base,278.5,83.53349524344236,2.615717196595493
+39,2020-08-30 04:24:13,/r/mechmarket/comments/ij6s20/sgh_rama_m65a_analog_dreamsdotsmerlin_cysm_alpha/,gmk dots,['base'],450,base,316.47058823529414,48.60991000977734,2.7469586291735144
+40,2020-12-09 17:46:39,/r/mechmarket/comments/k9wlbf/usca_h_artisans_tinymakesthings_keyforge_rama_etc/,gmk dots,['base'],135,base,303.125,53.78584076377967,3.1258226628525314
+41,2021-01-03 04:33:28,/r/mechmarket/comments/kpdpqh/usca_h_gmk_dualshot_all_kits_deskpad_w_paypal/,gmk dualshot,['base'],360,base,291.58620689655174,25.796618329567504,2.652045017273985
+42,2020-12-24 00:53:39,/r/mechmarket/comments/kj5d3z/usca_h_ewhite_vega_navy_maja_gmk_coral_spacebars/,gmk firefly,['base'],1000,base,315.84615384615387,215.83784274073525,3.169758544036473
+43,2020-11-13 19:59:25,/r/mechmarket/comments/jtn0pb/cabc_h_deskmats_gmk_sharkbait_w_paypal/,gmk first,['base'],55,base,253.0,69.63095998358268,2.84356269174924
+44,2020-03-04 17:21:53,/r/mechmarket/comments/fdgavq/uscah_tgr_x_singa_unikorn_gmk_pulse_arabic_micons/,gmk hyperfuse,['base'],750,base,216.3846153846154,170.34941466563095,3.1324755982448638
+45,2020-02-11 01:09:58,/r/mechmarket/comments/f20hzm/usaz_h_sa_pulse_imperial_hue_kf_lambda_mulder_etc/,gmk laser,['base'],500,base,155.66666666666666,105.5236376137503,3.2630919585401488
+46,2021-01-13 03:19:20,/r/mechmarket/comments/kw7rwq/uscah_mira_wkl_ca66_j80_space65_eva_fr4_kbd75v2/,gmk metaverse,['base'],60,base,265.0,61.16522856317293,3.3515774373060836
+47,2020-02-10 14:53:44,/r/mechmarket/comments/f1rdfo/usflhquantum_volcano_metro_wpaypal_possible_trades/,gmk metropolis,['base'],875,base,217.0,192.74149971992466,3.413898931761706
+48,2020-05-13 19:36:35,/r/mechmarket/comments/gj609e/usilh_gmk_metropolis_gmk_dmg_w_paypal/,gmk metropolis,['base'],420,base,195.37037037037038,84.97653438456635,2.643431286725049
+49,2020-07-07 12:04:49,/r/mechmarket/comments/hmta6v/eude_hkbdpad_mkii_zealios_v2_stellar_amagmk/,gmk minimal,['base'],78,base,243.9,51.6515654218371,3.2119065249058507
+50,2020-01-21 00:24:18,/r/mechmarket/comments/ermheu/usohh_gmk_mizu_base_x2_mizu_novelties_w_paypal/,gmk mizu,['base'],80,base,223.46153846153845,55.72942876765588,2.5742510130446616
+51,2020-03-04 05:02:23,/r/mechmarket/comments/fd8126/usca_h_think65_hotswap_pc_clear_with_gold_badge/,gmk mizu,['base'],60,base,219.25,59.56586359034139,2.6735111421405198
+52,2020-05-17 00:00:05,/r/mechmarket/comments/gl58cb/usca_h_gmk_mizu_all_kits_w_paypal/,gmk mizu,['base'],500,base,256.4583333333333,68.15071479842473,3.5735746482925523
+53,2020-11-14 04:08:40,/r/mechmarket/comments/jtvije/usnc_h_cyberboard_green_percent_volt80_deskmats/,gmk mizu,['base'],70,base,327.27272727272725,98.54855748217798,2.610618905499999
+54,2020-04-04 19:49:32,/r/mechmarket/comments/fv01yp/usca_h_gmk_oblivion_v2_git_base_hagoromo_alphas/,gmk mizu,"['cable', 'base']",60,bundle,314.3333333333333,101.11638744300454,2.5152533606552283
+55,2020-05-22 21:41:16,/r/mechmarket/comments/gosgl5/usla_h_closet_sale_matrix_noah_discipline65/,gmk mizu,['rama'],200,single,77.6923076923077,46.26082686857319,2.6438717287775235
+56,2020-12-29 21:38:41,/r/mechmarket/comments/kmnlvk/usca_h_gmk_nautilus_nightmare_gmk_wob_zhuyin_gmk/,gmk nautilus,['base'],325,base,211.53846153846155,39.75888870138639,2.8537401865958607
+57,2020-09-12 08:32:30,/r/mechmarket/comments/ir8y76/au_h_sa_arcane_gmk_peaches_n_cream_gmk_night/,gmk night,['base'],385,base,267.9166666666667,41.64014307313936,2.811789890531375
+58,2020-03-24 02:43:24,/r/mechmarket/comments/fnxfiu/uscah_gmk_switches_artisans_desk_mat_w_paypal/,gmk nines,['base'],75,base,181.8421052631579,30.92151922007056,3.4552670100959575
+59,2020-04-13 17:59:27,/r/mechmarket/comments/g0o2t3/usca_h_gmk_oblivion_v2_monochrome_oblivion_cadet/,gmk oblivion,['base'],58,base,193.78688524590163,53.2031060352991,2.5522360509517994
+60,2020-07-04 04:45:09,/r/mechmarket/comments/hkxkwy/usil_h_noxary_t60_gateron_inks_partial_gmk/,gmk oblivion,['base'],55,base,207.86046511627907,60.86815626744055,2.511337199777264
+61,2020-07-13 01:05:16,/r/mechmarket/comments/hq5we9/usca_h_duck_eagle_v1_duck_lightsaver_v2_duck/,gmk oblivion,['base'],500,base,219.14634146341464,71.8409914239808,3.9093789349186983
+62,2020-12-31 08:55:25,/r/mechmarket/comments/knmmex/sgh_gmk_oblivion_v2_git_base_sealed_hagaromo/,gmk oblivion,['base'],460,base,253.84375,77.21904719691877,2.6697590488817395
+63,2021-04-06 20:30:42,/r/mechmarket/comments/mlkzmp/usca_h_forty_percent_keeb_collection_artisans_sa/,gmk oblivion,['base'],470,base,246.66666666666666,76.32714676531073,2.926001335016943
+64,2020-12-22 02:12:34,/r/mechmarket/comments/khvuam/usca_h_gmk_oblivion_w_mods_sealed_acrylic_tofu60/,gmk oblivion,['mods'],350,single,119.8,88.9029433333528,2.5893405928849402
+65,2020-08-03 03:28:17,/r/mechmarket/comments/i2pssw/sghgmk_analog_dreamolivemerlin_etc_sets_hipro/,gmk olive,['base'],300,base,232.69230769230768,25.299488187789475,2.6604369150905454
+66,2020-08-20 03:59:41,/r/mechmarket/comments/id39ds/usva_h_sealed_gmk_olive_tangerine_switches_62g67g/,gmk olive,['base'],350,base,248.75,36.49200825751665,2.774580102182906
+67,2020-10-02 16:58:28,/r/mechmarket/comments/j3ybp4/usdc_h_big_closet_sale_pc_e65_gmk_olivia_kits_and/,gmk olivia,['base'],575,base,296.65671641791045,78.79269929239636,3.532602462941007
+68,2020-10-24 18:25:53,/r/mechmarket/comments/jhdw4a/eues_h_gmk_olivia_light_base_w_paypal/,gmk olivia,['light base'],18,base,291.93636363636364,70.76375961414811,3.8711391979460954
+69,2020-10-28 23:13:23,/r/mechmarket/comments/jjykj1/tw_h_gmk_dualshotbase_novelty_space_gmk/,gmk olivia,['base'],80,base,290.11206896551727,71.87123407773149,2.923451526354383
+70,2020-10-31 00:43:27,/r/mechmarket/comments/jl8yma/ussc_h_tmov2_gmk_sets_w_paypal/,gmk olivia,['base'],70,base,288.2096774193548,73.23303646007987,2.9796617478547853
+71,2020-11-07 01:15:08,/r/mechmarket/comments/jphoc9/uscahkepler_tkl_blackblack_pvd_brass_space65_r2/,gmk olivia,['base'],2800,base,308.0234375,233.43003689226376,10.67547516881958
+72,2021-02-28 02:32:00,/r/mechmarket/comments/lu3ax3/usil_h_bnib_voice65_black_hotswap_ewhite_tofu_60/,gmk olivia,['base'],55,base,279.07246376811594,64.37032537923675,3.4809900749762654
+73,2021-03-10 01:11:11,/r/mechmarket/comments/m1lkc7/usco_h_gmk_olivia_light_set_novelties_spacebars/,gmk olivia,['base'],60,base,277.135593220339,65.87617894701587,3.2961169984522156
+74,2021-04-02 17:53:03,/r/mechmarket/comments/miplf3/ustxh_gmk_bleached_base_sealed_gmk_9009_aesthetic/,gmk olivia,['base'],70,base,281.60869565217394,70.33522217396388,3.00857364364032
+75,2021-04-09 16:55:28,/r/mechmarket/comments/mnll7p/usca_h_gmk_olivia_light_gmk_modern_dolch_w_paypal/,gmk olivia,['base'],500,base,293.8139534883721,79.66903437823053,2.588032453522093
+76,2021-04-23 04:35:12,/r/mechmarket/comments/mwne9z/usil_h_tofu60_oliva_clone_keycaps_w_paypal/,gmk olivia,['base'],60,base,288.2830188679245,81.33794113225538,2.806599425681757
+77,2020-12-05 05:35:29,/r/mechmarket/comments/k71yks/ustxh_cyberspace_sirius_honeyrot_v2_shishi_gmk/,gmk olivia,"['novelties', 'spacebars', 'base', 'extension']",600,bundle,333.4736842105263,102.60202222392168,2.597671176575826
+78,2021-02-19 19:15:07,/r/mechmarket/comments/lnny9y/uswah_olivia_light_base_dark_base_spacebars_gmk/,gmk olivia,"['spacebars', 'base']",70,bundle,322.72727272727275,85.00083555739053,2.9732328049485743
+79,2021-03-04 07:54:02,/r/mechmarket/comments/lxfk6r/kzh_brass_lin_montage_tkl_ca66_sa_laser_gmk_laser/,gmk olivia,"['spacebars', 'base']",80,bundle,316.1666666666667,90.71253699360466,2.6034622610468574
+80,2021-03-16 18:59:02,/r/mechmarket/comments/m6ghxy/usva_h_gmk_penumbra_solarized_alphas_gmk_olivia/,gmk olivia,"['novelties', 'base']",55,bundle,304.21875,90.14423366418528,2.764666577880242
+81,2020-11-24 23:50:48,/r/mechmarket/comments/k0gr8h/usfl_h_gmk_olivia_light_spacebars_olivia_dark/,gmk olivia,['deskmat'],420,single,132.04761904761904,112.16428551643483,2.5672376873491416
+82,2020-06-10 19:32:01,/r/mechmarket/comments/h0i8oq/uscah_alpacas_gmk_vice_nights_og_blue_jelly_poms/,gmk peaches,['base'],130,base,227.5,36.71140521319325,2.6558503940067295
+83,2020-09-12 08:32:30,/r/mechmarket/comments/ir8y76/au_h_sa_arcane_gmk_peaches_n_cream_gmk_night/,gmk peaches,['base'],385,base,299.125,29.170475941723446,2.9439012298448755
+84,2020-04-22 04:33:17,/r/mechmarket/comments/g5uorm/au_h_gmk_pulse_gmk_vaporwave_gmk_olive_gmk_voyage/,gmk pulse,['base'],285,base,152.14285714285714,40.35998725753728,3.2918033895645404
+85,2020-07-17 02:54:01,/r/mechmarket/comments/hsnyec/uswah_ewhite_singa_v3_gmk_red_samurai_r1_pbt/,gmk red,['base'],235,base,107.58620689655173,38.37364910733416,3.3203460204439175
+86,2020-10-15 18:04:13,/r/mechmarket/comments/jbsspv/my_h_norbatouch_prototype_case_gmk_classic_retro/,gmk red,['base'],225,base,102.5,40.84445165220402,2.9991833662771117
+87,2021-04-09 18:17:16,/r/mechmarket/comments/mnn9xz/usma_h_drop_ctrl_low_profile_assembled_gmk_taro/,gmk red,['base'],225,base,95.3913043478261,37.90986814494082,3.418864321992387
+88,2021-04-17 13:23:09,/r/mechmarket/comments/msqnkd/uk_h_e85_switches_bnw_fulfillment_sirius_w_paypal/,gmk red,['base'],252,base,100.84210526315789,50.797269346879425,2.975709062324391
+89,2020-12-20 17:34:54,/r/mechmarket/comments/kgy7qf/usca_h_gmk_rudy_dark_horse_kit_bundle_w_paypal/,gmk rudy,['base'],425,base,300.8125,47.47521283083767,2.615838720776279
+90,2020-11-06 19:00:08,/r/mechmarket/comments/jpb2v1/euuk_h_pc_think_65_w_gold_badge_build_green/,gmk space,['base'],980,base,268.44444444444446,277.5099597812262,2.5640721367856756
+91,2020-05-07 11:25:18,/r/mechmarket/comments/gf4qo0/eunlh_gmk_striker_gmk_8008_gmk_terminal_sa_ortho/,gmk striker,['base'],420,base,238.92857142857142,65.90139987507477,2.7476112634128342
+92,2021-02-23 21:52:00,/r/mechmarket/comments/lqu3iu/au_h_artisans_w_paypal/,gmk sumi,['rama'],130,single,56.470588235294116,25.785455316560785,2.851584773741862
+93,2021-01-13 23:33:48,/r/mechmarket/comments/kwszs5/usflhgmk_taro_gmk_metaverse_and_gmk_ursawpaypal/,gmk taro,['base'],80,base,258.63157894736844,54.221982551478746,3.2944494196200647
+94,2021-02-18 17:39:07,/r/mechmarket/comments/lmscjk/usca_h_gmk_taro_r2_boba_alphas_sealed_kfe_ce_wkl/,gmk taro,['base'],5,base,267.05555555555554,61.82091391127599,4.238946644037839
+95,2021-01-10 21:48:39,/r/mechmarket/comments/kunw35/usny_h_bnib_gmk_cafe_bnib_gmk_umbra_w_paypal/,gmk umbra,['base'],320,base,267.8333333333333,20.40424792373717,2.5566571657845265
+96,2020-04-10 18:08:54,/r/mechmarket/comments/fyl4fg/ustnh_txcp_octagon_v3_gmk_oblivion_mono_gmk/,gmk wob,['base'],550,base,156.0,122.07647876092537,3.227484966793724
+97,2020-06-07 23:49:58,/r/mechmarket/comments/gynosw/usfl_h_singa_wkl_r1_violet_wbrass_plate_635g/,gmk wob,['base'],570,base,169.2608695652174,126.39987679485667,3.170407603206533
+98,2020-10-21 17:39:46,/r/mechmarket/comments/jfhm6d/euuk_h_gmk_wob_hiragana_w_paypal/,gmk wob,['base'],280,base,141.09677419354838,46.97542253754238,2.9569340370582355
+99,2021-03-27 19:40:32,/r/mechmarket/comments/mekzlq/usri_h_gmk_wob_hiragana_and_gmk_sandstorm_90/,gmk wob,['base'],275,base,134.58333333333334,44.16069141970795,3.1796754568929093
