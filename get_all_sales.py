@@ -7,9 +7,11 @@ files = glob.glob("./datasets/*")
 df = []
 
 for f in files:
-    sales, low_base = parse_prices(os.path.basename(f))
+    sales, bad_df = parse_prices(os.path.basename(f))
     sales.to_csv("sales/sales_" + os.path.basename(f))
-    df.append(low_base)
+    df.append(bad_df)
 
 df = pd.concat(df)
-df.to_csv("sales/all_low_base.csv")
+df.reset_index(inplace=True)
+df.drop(columns=["index"], inplace=True)
+df.to_csv("sales/all_bad.csv")

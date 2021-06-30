@@ -24,7 +24,8 @@ for name, group in grouped:
             category_df["price"].rolling("90d", min_periods=0).std()
         )
 
-        category_df.set_index(["Unnamed: 0"], inplace=True)
+        category_df.reset_index(inplace=True)
+        category_df.drop(columns=["Unnamed: 0"], inplace=True)
 
         category_df["rolling_sd"].fillna(0, inplace=True)
         category_df["rolling_sd"].replace(0, 1, inplace=True)
@@ -39,5 +40,11 @@ for name, group in grouped:
 good_base = pd.concat(good_base)
 bad_base = pd.concat(bad_base)
 
-good_base.to_csv("good_bases_c2.csv")
-bad_base.to_csv("bad_bases_c2.csv")
+good_base.reset_index(inplace=True)
+bad_base.reset_index(inplace=True)
+
+good_base.drop(columns=["index"], inplace=True)
+bad_base.drop(columns=["index"], inplace=True)
+
+good_base.to_csv("sales/passed_sd_check.csv")
+bad_base.to_csv("sales/failed_sd_check.csv")

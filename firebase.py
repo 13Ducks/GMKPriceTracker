@@ -1,32 +1,41 @@
 import firebase_admin
 from firebase_admin import credentials, firestore
-import glob
 import pandas as pd
 import ast
-from datetime import datetime
 
 cred = credentials.Certificate("./firebaseAccountKey.json")
 firebase_admin.initialize_app(cred)
-
 db = firestore.client()
 
+passed_df = pd.read_csv("./sales/passed_sd_check.csv")
+all_bad_df = pd.read_csv("./sales/all_bad.csv")
+failed_df = pd.read_csv("./sales/failed_sd_check.csv")
 
-sales = glob.glob("sales/*")
-for s in sales:
-    print(s)
+with open("./manual_filter/all_bad.txt", "r") as f:
+    l = list(map(int, f.read().split(" ")))
+    passed_df = passed_df.append(all_bad_df.iloc[l])
 
-    df = pd.read_csv(s)
-    df["date"] = pd.to_datetime(df["date"])
-    grouped = df.groupby("product")
-    for name, group in grouped:
-        collection = db.collection("gmk").document(name).collection("sales")
-        for row in group.itertuples():
-            data = {
-                u"link": row.link,
-                u"sets": ast.literal_eval(row.sets),
-                u"price": row.price,
-                u"category": row.category,
-                u"date": row.date,
-            }
+with open("./manual_filter/bad_sd.txt", "r") as f:
+    l = list(map(int, f.read().split(" ")))
+    passed_df = passed_df.append(failed_df.iloc[l])
 
-            collection.add(data)
+
+passed_df["date"] = pd.to_datetime(passed_df["date"])
+
+grouped = passed_df.groupby("product")
+for name, group in grouped:
+    print(name)
+    doc = db.collection("gmk").document(name)
+    doc.set({u"count": group.shape[0]})
+
+    collection = doc.collection("sales")
+    for row in group.itertuples():
+        data = {
+            u"link": row.link,
+            u"sets": ast.literal_eval(row.sets),
+            u"price": row.price,
+            u"category": row.category,
+            u"date": row.date,
+        }
+
+        collection.add(data)
