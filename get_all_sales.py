@@ -3,15 +3,16 @@ import pandas as pd
 import glob
 import os
 import numpy as np
+
 files = glob.glob("./datasets/*")
 df = pd.DataFrame()
 first = True
 for f in files:
-    data = parse_prices(os.path.basename(f))
-    data[0].to_csv("sales/sales_" + os.path.basename(f))
-    if first:
-        df = data[1]
-        first = False
-    else:
-        df = df.append(data[1])
-df.to_csv("sales/manual_data.csv")
+    sales, bad_df = parse_prices(os.path.basename(f))
+    # sales.to_csv("sales/sales_" + os.path.basename(f))
+    df.append(bad_df)
+
+# df = pd.concat(df)
+# df.reset_index(inplace=True)
+# df.drop(columns=["index"], inplace=True)
+# df.to_csv("sales/all_bad.csv")

@@ -37,3 +37,33 @@ tr:nth-child(even) {
   background-color: #dddddd;
 }
 
+.square {
+  float:left;
+  position: relative;
+  width: 30%;
+  padding-bottom : 25%; 
+  margin:1.66%;
+  background-color:#1E1E1E;
+  overflow:hidden;
+}
+
+.home-gmk {
+  font-size:20px;
+  font-family: 'Lato',verdana, sans-serif;
+  color: #fff;
+  text-align:center;
+  margin:0;
+  padding:0;
+}
+
+.content {
+  position:absolute;
+  height:90%;
+  width:90%;
+  padding: 5%;
+}
+
+.content .rs{
+  max-height:90%;
+  max-width:100%;
+}

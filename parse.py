@@ -7,6 +7,16 @@ euro_to_usd = 1.2
 pound_to_usd = 1.4
 
 bad_words = ["stab", "screw", "snap in", "clip in", "pcb mount", "plate mount"]
+bad_words2 = [
+    "kbd",
+    "pcb",
+    "built",
+    "polycarb",
+    "pc",
+    "koyu",
+]
+
+file = open("test.txt", "w")
 
 
 def get_category(products):
@@ -160,8 +170,20 @@ def parse_prices(filename):
                                         ]
                                     )
                             else:
-                                remove_entry = False
-                            temp_data["products"] = kits
+                                if any([b in low for b in bad_words2]):
+                                    file.write(low + "\n")
+                                sales_data.append(
+                                    [
+                                        row[0],
+                                        product_name,
+                                        temp_data["products"],
+                                        temp_data["price"],
+                                        temp_data["category"],
+                                        row.date,
+                                    ]
+                                )
+
+                            temp_data["products"] = list(kits)
                             temp_data["str"] = curr_str
                             temp_data["price"] = curr_price
                         else:
@@ -180,14 +202,14 @@ def parse_prices(filename):
                                     ):
                                         remove_entry = True
                             elif curr_price <= 100:
-                                if(
-                                    "base" in temp_data["products"]
-                                ):
+                                if "base" in temp_data["products"]:
                                     addToWeird = True
 
                             else:
                                 if not addToWeird:
-                                    temp_data["price"] = min(temp_data["price"], curr_price)
+                                    temp_data["price"] = min(
+                                        temp_data["price"], curr_price
+                                    )
 
                     if temp_data["products"]:
                         temp_data["category"] = get_category(temp_data["products"])
@@ -195,7 +217,7 @@ def parse_prices(filename):
                     if not remove_entry:
                         if addToWeird:
                             strange_data.append(
-                                    [
+                                [
                                     row[0],
                                     product_name,
                                     temp_data["products"],
@@ -217,7 +239,18 @@ def parse_prices(filename):
                                 ]
                             )
                     else:
-                        remove_entry = True
+                        if any([b in low for b in bad_words2]):
+                            file.write(low + "\n")
+                        sales_data.append(
+                            [
+                                row[0],
+                                product_name,
+                                temp_data["products"],
+                                temp_data["price"],
+                                temp_data["category"],
+                                row.date,
+                            ]
+                        )
 
     for row in df.itertuples():
         match_product(row)
@@ -244,7 +277,8 @@ def parse_prices(filename):
 
     return (sales_df, manual_df)
 
-if __name__ == 'main':
-    a = parse_prices('april2020.csv')
+
+if __name__ == "main":
+    a = parse_prices("april2020.csv")
     a[0].to_csv("sales/good_data.csv")
     a[1].to_csv("sales/bad_data.csv")
