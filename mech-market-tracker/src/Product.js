@@ -57,7 +57,18 @@ function ProductPage() {
 }
 
 function Product() {
-    const { productID } = useParams();
+    let { productID } = useParams();
+    productID = productID.toLowerCase();
+
+    if (productID.split(" ")[0] === "gmk") {
+        productID = productID.split(" ")[1];
+    }
+
+    if (productID.split(" ").length > 1) {
+        productID = productID.split(" ")[0];
+    }
+
+
     const gmkID = "gmk " + productID
     const [product, setProduct] = useState([]);
     const [average, setAverage] = useState([]);
@@ -190,36 +201,46 @@ function Product() {
         })
     }, [gmkID]);
 
+    if (product.length === 0) return (
+        <div>
+            No data was found for <span style={{ fontWeight: "bold" }}> GMK {productID.charAt(0).toUpperCase() + productID.slice(1)}</span>
+        </div>
+    )
+
     return (
         <div>
-            <LineChart
-                width={800}
-                height={400}
-                data={average}
-                onClick={(e, payload) => {
-                    if (e !== null && payload.target.className.baseVal !== "recharts-dot") {
-                        setSetsShow([...SETS]);
-                    }
-                }}
-                onMouseDown={(e) => { if (e !== null) setClickLeft(e.activeLabel) }}
-                onMouseMove={(e) => { if (e !== null) clickLeft && setClickRight(e.activeLabel) }}
-                onMouseUp={() => zoom()}
-            >
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="epoch" type="number" scale="time" padding={{ left: 25, right: 25 }} interval={0} angle={30} tickMargin={15} height={50} domain={[graphLeft, graphRight]} allowDataOverflow tickFormatter={datePrettyFormat} />
-                <YAxis />
-                <Tooltip labelFormatter={datePrettyFormat} formatter={(value, name, props) => {
-                    return `$${props.payload[props.dataKey]}, ${props.payload[props.dataKey + "_q"]} units`
-                }} />
-                <Legend />
-                <Line type="linear" dataKey="base" stroke="#4053d3" activeDot={{ onClick: (e, payload) => setSetsShow([payload.dataKey]) }} />
-                <Line type="linear" dataKey="bundle" stroke="#b51d14" activeDot={{ onClick: (e, payload) => setSetsShow([payload.dataKey]) }} />
-                <Line type="linear" dataKey="single" stroke="#00b25d" activeDot={{ onClick: (e, payload) => setSetsShow([payload.dataKey]) }} />
-                <Line type="linear" dataKey="other" stroke="#00beff" activeDot={{ onClick: (e, payload) => setSetsShow([payload.dataKey]) }} />
-                {clickLeft && clickRight ? (
-                    <ReferenceArea x1={clickLeft} x2={clickRight} strokeOpacity={0.3} />
-                ) : null}
-            </LineChart>
+            <div className="graph">
+                <p style={{ padding: 20, margin: 0, fontSize: 20 }}>Showing results for <span style={{ fontWeight: "bold" }}> GMK {productID.charAt(0).toUpperCase() + productID.slice(1)}</span></p>
+
+                <LineChart
+                    width={800}
+                    height={400}
+                    data={average}
+                    onClick={(e, payload) => {
+                        if (e !== null && payload.target.className.baseVal !== "recharts-dot") {
+                            setSetsShow([...SETS]);
+                        }
+                    }}
+                    onMouseDown={(e) => { if (e !== null) setClickLeft(e.activeLabel) }}
+                    onMouseMove={(e) => { if (e !== null) clickLeft && setClickRight(e.activeLabel) }}
+                    onMouseUp={() => zoom()}
+                >
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="epoch" type="number" scale="time" padding={{ left: 25, right: 25 }} interval={0} angle={30} tickMargin={15} height={50} domain={[graphLeft, graphRight]} allowDataOverflow tickFormatter={datePrettyFormat} />
+                    <YAxis label={{ value: 'Price (USD)', angle: -90, position: 'insideLeft' }} />
+                    <Tooltip labelFormatter={datePrettyFormat} formatter={(value, name, props) => {
+                        return `$${props.payload[props.dataKey]}, ${props.payload[props.dataKey + "_q"]} units`
+                    }} />
+                    <Legend />
+                    <Line type="linear" dataKey="base" stroke="#4053d3" activeDot={{ onClick: (e, payload) => setSetsShow([payload.dataKey]) }} />
+                    <Line type="linear" dataKey="bundle" stroke="#b51d14" activeDot={{ onClick: (e, payload) => setSetsShow([payload.dataKey]) }} />
+                    <Line type="linear" dataKey="single" stroke="#00b25d" activeDot={{ onClick: (e, payload) => setSetsShow([payload.dataKey]) }} />
+                    <Line type="linear" dataKey="other" stroke="#00beff" activeDot={{ onClick: (e, payload) => setSetsShow([payload.dataKey]) }} />
+                    {clickLeft && clickRight ? (
+                        <ReferenceArea x1={clickLeft} x2={clickRight} strokeOpacity={0.3} />
+                    ) : null}
+                </LineChart>
+            </div>
 
             <button className="resetSetButton" onClick={() => {
                 setDataShowParams({ start: START_DATE_DT, end: END_DATE_DT })
@@ -231,6 +252,8 @@ function Product() {
             </button>
 
             {SETS.map((box) => { return buttonSetInclude(box) })}
+
+
 
             <table>
                 <thead>
