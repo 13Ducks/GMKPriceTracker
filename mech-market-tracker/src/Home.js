@@ -18,12 +18,13 @@ function HomePage() {
 
     return (
         <div className='app'>
+
             <div className='top-images'>
-                {topGMK.map((id, index) => {
+                {topGMK.map((id) => {
                     let product = id.split(" ")[1];
                     return (
-                        <Link to={'/products/' + product + '/'}>
-                            <div className="square" key={id}>
+                        <Link to={'/products/' + product + '/'} key={id}>
+                            <div className="square" >
                                 <div className="content">
                                     <div className="table">
                                         <div className="table-cell">

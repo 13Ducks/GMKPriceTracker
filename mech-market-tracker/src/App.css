@@ -1,14 +1,3 @@
-.mizu {
-  background-image: url("./gmk_mizu.jpg");
-  background-size: 300px;
-  cursor: pointer;
-  border: 0;
-  min-width: 300px;
-  min-height: 300px;
-  color: #fff;
-  font-size: 32px;
-}
-
 .resetSetButton {
   background: #ED4337;
   border: 1px solid #ccc;

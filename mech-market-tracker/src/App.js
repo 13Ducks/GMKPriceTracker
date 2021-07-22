@@ -8,6 +8,7 @@ import {
 import './App.css';
 import HomePage from './Home.js'
 import ProductPage from './Product.js';
+import NavBar from './NavBar';
 
 class App extends Component {
   constructor() {
@@ -21,9 +22,11 @@ class App extends Component {
       <Router>
         <Switch>
           <Route path="/products">
+            <NavBar />
             <ProductPage />
           </Route>
           <Route path="/">
+            <NavBar />
             <HomePage />
           </Route>
         </Switch>

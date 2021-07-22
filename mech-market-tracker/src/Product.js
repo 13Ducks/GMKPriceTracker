@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import {
     Switch,
     Route,
+    Redirect,
     useRouteMatch,
     useParams
 } from "react-router-dom";
@@ -45,7 +46,7 @@ function ProductPage() {
         <div>
             <Switch>
                 <Route exact path={path}>
-                    <h3>You should not be here!!!</h3>
+                    <Redirect to={"/"} />
                 </Route>
                 <Route path={`${path}/:productID`}>
                     <Product />
@@ -187,7 +188,7 @@ function Product() {
             setProduct(allData);
             setAverage(averageByMonth);
         })
-    }, []);
+    }, [gmkID]);
 
     return (
         <div>
