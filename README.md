@@ -1,3 +1,3 @@
-# MMTracker
+# GMK Price Tracker
 
-Track prices from Mech Market
+Track GMK keycap prices from Mech Market subreddit
