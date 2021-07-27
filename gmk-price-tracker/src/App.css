@@ -29,7 +29,7 @@ tr:nth-child(even) {
 .square {
   float:left;
   position: relative;
-  width: 20%;
+  width: 23%;
   padding-bottom : 20%; 
   margin:1%;
   background-color:#333;
@@ -82,6 +82,7 @@ tr:nth-child(even) {
 
 .section-header {
   font-size: 40px;
+  font-weight: bold;
 }
 
 .home-page {

@@ -18,7 +18,9 @@ function HomePage() {
 
     return (
         <div className='home-page'>
-            <p className="section-header" style={{ margin: 0 }} >Popular Sets</p>
+            <div className="graph" style={{ padding: 10 }}>
+                <p className="section-header" style={{ margin: 0 }} >Popular Sets</p>
+            </div>
             <div className='top-images'>
                 {topGMK.map((id) => {
                     let product = id.split(" ")[1];
