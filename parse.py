@@ -232,7 +232,6 @@ def parse_prices(filename):
 
     return (sales_df, bad_df)
 
-
 if __name__ == "__main__":
     a = parse_prices("april2020.csv")
     a[0].to_csv("good_data2.csv")
