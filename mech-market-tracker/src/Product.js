@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 
 import {
     Switch,
@@ -56,6 +56,23 @@ function ProductPage() {
     );
 }
 
+const useIsMount = () => {
+    const isMountRef = useRef(true);
+    useEffect(() => {
+        isMountRef.current = false;
+    }, []);
+    return isMountRef.current;
+};
+
+function NoDataPage(productID) {
+    // ADD FUZZY SEARCH
+    return (
+        <div>
+            No data was found for <span style={{ fontWeight: "bold" }}> GMK {productID.charAt(0).toUpperCase() + productID.slice(1)}</span>
+        </div>
+    )
+}
+
 function Product() {
     let { productID } = useParams();
     productID = productID.toLowerCase();
@@ -68,6 +85,7 @@ function Product() {
         productID = productID.split(" ")[0];
     }
 
+    const isMount = useIsMount();
 
     const gmkID = "gmk " + productID
     const [product, setProduct] = useState([]);
@@ -201,11 +219,13 @@ function Product() {
         })
     }, [gmkID]);
 
-    if (product.length === 0) return (
-        <div>
-            No data was found for <span style={{ fontWeight: "bold" }}> GMK {productID.charAt(0).toUpperCase() + productID.slice(1)}</span>
-        </div>
-    )
+    if (isMount) {
+        return <div></div>
+    }
+
+    if (product.length === 0) {
+        return NoDataPage(productID);
+    }
 
     return (
         <div>
