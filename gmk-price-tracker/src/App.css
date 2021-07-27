@@ -1,6 +1,6 @@
 .resetSetButton {
   background: #ED4337;
-  border: 1px solid #ccc;
+  border: none;
   padding: 10px 30px;
   border-radius: 3px;
   cursor: pointer;
@@ -92,10 +92,13 @@ tr:nth-child(even) {
 .info {
   background-color: #333;
   color:#fff;
-  font-size: 20px;
   padding: 20px;
 }
 
 dt {
   font-size: 26px;
+}
+
+dd {
+  font-size: 20px;
 }

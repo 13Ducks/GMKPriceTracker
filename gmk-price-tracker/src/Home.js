@@ -55,7 +55,7 @@ function HomePage() {
                             <li>Scraping: <a href="https://pypi.org/project/psaw/">PSAW</a></li>
                             <li>Parsing: <a href="https://www.python.org/">Python</a>, <a href="https://pypi.org/project/pandas/">Pandas</a></li>
                             <li>Database: <a href="https://firebase.google.com/">Firebase</a></li>
-                            <li>Website: <a href="https://reactjs.org/">React</a>, <a href="https://recharts.org/">Recharts</a>, <a href="https://reactrouter.com/">React Router</a>, <a href="https://ant.design/">Ant Design</a></li>
+                            <li>Website: <a href="https://reactjs.org/">React</a>, <a href="https://recharts.org/">Recharts</a>, <a href="https://reactrouter.com/">React Router</a>, <a href="https://ant.design/">Ant Design</a>, <a href="https://fusejs.io/">Fuse.js</a></li>
                         </ul>
                     </dd>
                     <dt>What GMK sets do you own?</dt>

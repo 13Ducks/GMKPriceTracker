@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 
 import {
+    Link,
     Switch,
     Route,
     Redirect,
@@ -19,7 +20,10 @@ import {
     ReferenceArea,
 } from "recharts";
 
+import Fuse from "fuse.js";
+
 import db from './firebase.js';
+import thinkingEmote from './thinking.png'
 
 const SETS = ["base", "bundle", "single", "other"];
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -64,13 +68,53 @@ const useIsMount = () => {
     return isMountRef.current;
 };
 
-function NoDataPage(productID) {
-    // ADD FUZZY SEARCH
-    return (
-        <div>
-            No data was found for <span style={{ fontWeight: "bold" }}> GMK {productID.charAt(0).toUpperCase() + productID.slice(1)}</span>
-        </div>
-    )
+function NoDataPage(props) {
+    const [sets, setSets] = useState(["not mounted"]);
+
+    useEffect(() => {
+        let setNames = [];
+        db.collection("gmk").get().then(querySnapshot => {
+            querySnapshot.forEach(doc => {
+                setNames.push(doc.id);
+            })
+
+            const fuse = new Fuse(setNames, { includeScore: true, threshold: 0.3 });
+            let results = fuse.search(props.data.productID);
+
+            let newSets = [];
+            results.forEach(result => {
+                let split = result.item.split(" ")[1];
+                if (split) {
+                    newSets.push(split);
+                }
+            })
+
+            setSets(newSets.slice(0, 10));
+        })
+    }, [props.data.productID]);
+
+    let id = props.data.productID
+
+    let added = [];
+
+    if (sets.length === 0) {
+        added.push(<p style={{ fontSize: 20 }} key="none">No similarly named sets were found.</p>);
+    } else if (sets[0] !== "not mounted") {
+        added.push(<p style={{ fontSize: 20 }} key="meant">Did you mean one of the following?</p>);
+        sets.forEach((s) => {
+            added.push(
+                <Link to={'/products/' + s + '/'} key={s}>
+                    <p style={{ fontSize: 20, margin: 0 }}>GMK {s.charAt(0).toUpperCase() + s.slice(1)}</p>
+                </Link>
+            )
+        })
+    }
+
+    return (<div className="graph" style={{ padding: 20 }}>
+        <img src={thinkingEmote} alt="thinking emote" style={{ padding: 20 }} />
+        <p style={{ margin: 0, fontSize: 20 }}>No data was found for for <span style={{ fontWeight: "bold" }}> GMK {id.charAt(0).toUpperCase() + id.slice(1)}</span></p>
+        {added}
+    </div>)
 }
 
 function Product() {
@@ -113,6 +157,7 @@ function Product() {
                             setSetsShow(setsShow.filter((name) => name !== setName));
                         }
                     }}
+                    style={{ marginLeft: "3px" }}
                 />
             </React.Fragment>
         )
@@ -220,11 +265,11 @@ function Product() {
     }, [gmkID]);
 
     if (isMount) {
-        return <div></div>
+        return null;
     }
 
     if (product.length === 0) {
-        return NoDataPage(productID);
+        return <NoDataPage data={{ productID: productID }} />;
     }
 
     return (
