@@ -23,14 +23,13 @@ function HomePage() {
             <div className='top-images'>
                 {topGMK.map((id) => {
                     let product = id.split(" ")[1];
-                    console.log(product);
                     return (
                         <Link to={'/products/' + product + '/'} key={id}>
                             <div className="square" >
                                 <div className="content">
                                     <div className="table">
                                         <div className="table-cell">
-                                            <img className="rs" src={images["olivia"].default} alt={id} />
+                                            <img className="rs" src={images[product].default} alt={id} />
                                             <p className="home-gmk"> GMK {product.charAt(0).toUpperCase() + product.slice(1)} </p>
                                         </div>
                                     </div>
