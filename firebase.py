@@ -11,13 +11,13 @@ passed_df = pd.read_csv("./sales/passed_sd_check.csv")
 all_bad_df = pd.read_csv("./sales/all_bad.csv")
 failed_df = pd.read_csv("./sales/failed_sd_check.csv")
 
-with open("./manual_filter/all_bad.txt", "r") as f:
-    l = list(map(int, f.read().split(" ")))
-    passed_df = passed_df.append(all_bad_df.iloc[l])
+# with open("./manual_filter/all_bad.txt", "r") as f:
+#     l = list(map(int, f.read().split(" ")))
+#     passed_df = passed_df.append(all_bad_df.iloc[l])
 
-with open("./manual_filter/bad_sd.txt", "r") as f:
-    l = list(map(int, f.read().split(" ")))
-    passed_df = passed_df.append(failed_df.iloc[l])
+# with open("./manual_filter/bad_sd.txt", "r") as f:
+#     l = list(map(int, f.read().split(" ")))
+#     passed_df = passed_df.append(failed_df.iloc[l])
 
 
 passed_df["date"] = pd.to_datetime(passed_df["date"])

@@ -28,7 +28,7 @@ import thinkingEmote from './thinking.png'
 const SETS = ["base", "bundle", "single", "other"];
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 const START_DATE = [2020, 1];
-const END_DATE = [2021, 4];
+const END_DATE = [2021, 12];
 const START_DATE_DT = new Date(START_DATE[0], START_DATE[1] - 1, 1, 0, 0, 0, 0);
 const END_DATE_DT = new Date(END_DATE[0], END_DATE[1] - 1, 1, 0, 0, 0, 0);
 
@@ -278,7 +278,7 @@ function Product() {
                 <p style={{ padding: 20, margin: 0, fontSize: 20 }}>Showing results for <span style={{ fontWeight: "bold" }}> GMK {productID.charAt(0).toUpperCase() + productID.slice(1)}</span></p>
 
                 <LineChart
-                    width={800}
+                    width={900}
                     height={400}
                     data={average}
                     onClick={(e, payload) => {

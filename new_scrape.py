@@ -15,10 +15,8 @@ with open("credentials.txt", "r") as f:
 
 api = PushshiftAPI(reddit)
 
-limit_2021 = 4
-
 times = [int(dt.datetime(2020, m, 1).timestamp()) for m in range(1, 13)] + [
-    int(dt.datetime(2021, m, 1).timestamp()) for m in range(1, limit_2021 + 2)
+    int(dt.datetime(2021, m, 1).timestamp()) for m in range(1, 12)
 ]
 
 months = [
@@ -36,7 +34,7 @@ months = [
     "december",
 ]
 
-names = [m + "2020" for m in months] + [m + "2021" for m in months[:limit_2021]]
+names = [m + "2020" for m in months] + [m + "2021" for m in months]
 
 
 def get_data(start, end, name):
