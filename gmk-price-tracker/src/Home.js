@@ -15,7 +15,6 @@ function HomePage() {
             setTopGMK(top.reverse());
         })
     }, []);
-
     return (
         <div className='home-page'>
             <div className="graph" style={{ padding: 10 }}>
@@ -24,6 +23,7 @@ function HomePage() {
             <div className='top-images'>
                 {topGMK.map((id) => {
                     let product = id.split(" ")[1];
+                    console.log(product);
                     return (
                         <Link to={'/products/' + product + '/'} key={id}>
                             <div className="square" >
