@@ -11,8 +11,6 @@ import ProductPage from './Product.js';
 import NavBar from './NavBar';
 import { Layout } from 'antd';
 
-const basename = document.querySelector('base')?.getAttribute('href') ?? '/'
-
 class App extends Component {
   constructor() {
     super();
@@ -23,7 +21,7 @@ class App extends Component {
   render() {
     return (
       <Layout className="layout">
-        <Router basename={basename}>
+        <Router>
           <Switch>
             <Route path="/products">
               <NavBar />
