@@ -9,6 +9,7 @@ import './App.css';
 import HomePage from './Home.js'
 import ProductPage from './Product.js';
 import NavBar from './NavBar';
+import { Layout } from 'antd';
 
 class App extends Component {
   constructor() {
@@ -19,19 +20,20 @@ class App extends Component {
 
   render() {
     return (
-      <Router>
-        <Switch>
-          <Route path="/products">
-            <NavBar />
-            <ProductPage />
-          </Route>
-          <Route path="/">
-            <NavBar />
-            <HomePage />
-          </Route>
-        </Switch>
-
-      </Router>
+      <Layout className="layout">
+        <Router>
+          <Switch>
+            <Route path="/products">
+              <NavBar />
+              <ProductPage />
+            </Route>
+            <Route path="/">
+              <NavBar />
+              <HomePage />
+            </Route>
+          </Switch>
+        </Router>
+      </Layout>
     );
   }
 }

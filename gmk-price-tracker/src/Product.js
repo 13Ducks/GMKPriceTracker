@@ -45,7 +45,7 @@ function datePrettyFormat(ts) {
 }
 
 function ProductPage() {
-    const { path, url } = useRouteMatch();
+    const { path } = useRouteMatch();
     return (
         <div>
             <Switch>

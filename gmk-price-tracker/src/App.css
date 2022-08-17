@@ -16,7 +16,8 @@ table {
   width: 100%;
 }
 
-td, th {
+td,
+th {
   border: 1px solid #dddddd;
   text-align: left;
   padding: 8px;
@@ -27,44 +28,39 @@ tr:nth-child(even) {
 }
 
 .square {
-  float:left;
+  float: left;
   position: relative;
   width: 23%;
-  padding-bottom : 20%; 
-  margin:1%;
-  background-color:#333;
-  overflow:hidden;
+  padding-bottom: 20%;
+  margin: 1%;
+  background-color: #333;
+  overflow: hidden;
 }
 
 .home-gmk {
-  font-size:20px;
+  font-size: 20px;
   color: #fff;
-  text-align:center;
-  margin:0;
-  padding:0;
+  text-align: center;
+  margin: 0;
+  padding: 0;
 }
 
 .content {
-  position:absolute;
+  position: absolute;
   padding: 5%;
-  width:auto;
-  height:auto;
+  width: auto;
+  height: auto;
 }
 
-.rs{
-  max-height:90%;
-  max-width:100%;
+.rs {
+  max-height: 90%;
+  max-width: 100%;
 }
 
 .nav-bar {
-  background-color: #333;
-  height: 80px;
-  width: 100%;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding-left: 20px;
-  padding-right: 20px;
 }
 
 .home-button {
@@ -82,7 +78,6 @@ tr:nth-child(even) {
 
 .section-header {
   font-size: 40px;
-  font-weight: bold;
 }
 
 .home-page {
@@ -92,7 +87,7 @@ tr:nth-child(even) {
 
 .info {
   background-color: #333;
-  color:#fff;
+  color: #fff;
   padding: 20px;
 }
 

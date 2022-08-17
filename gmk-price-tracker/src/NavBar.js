@@ -4,8 +4,9 @@ import { Link, useHistory } from "react-router-dom";
 import './App.css';
 
 import 'antd/dist/antd.css';
-import { Input } from 'antd';
+import { Input, Layout } from 'antd';
 const { Search } = Input;
+const { Header } = Layout;
 
 function SearchBar() {
     const history = useHistory();
@@ -19,13 +20,12 @@ function SearchBar() {
 
 function NavBar() {
     return (
-        <div className='nav-bar'>
+        <Header className='nav-bar'>
             <Link to='/' className='home-button'>
                 GMK Price Tracker
             </Link>
             <SearchBar />
-        </div>
-
+        </Header>
     );
 }
 
