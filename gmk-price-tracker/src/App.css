@@ -16,17 +16,6 @@ table {
   width: 100%;
 }
 
-td,
-th {
-  border: 1px solid #dddddd;
-  text-align: left;
-  padding: 8px;
-}
-
-tr:nth-child(even) {
-  background-color: #dddddd;
-}
-
 .square {
   float: left;
   position: relative;
@@ -68,6 +57,11 @@ tr:nth-child(even) {
   text-align: center;
   text-decoration: none;
   font-size: 32px;
+}
+
+.home-button:hover {
+  text-decoration: none;
+  color: #f2f2f2;
 }
 
 .graph {

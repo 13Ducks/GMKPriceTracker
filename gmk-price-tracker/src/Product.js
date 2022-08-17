@@ -20,7 +20,10 @@ import {
     ReferenceArea,
 } from "recharts";
 
+import { Button, Table } from 'antd';
+
 import Fuse from "fuse.js";
+import tableColumns from './resultsTableColumn.js';
 
 import db from './firebase.js';
 import thinkingEmote from './thinking.png'
@@ -31,13 +34,6 @@ const START_DATE = [2020, 1];
 const END_DATE = [2021, 12];
 const START_DATE_DT = new Date(START_DATE[0], START_DATE[1] - 1, 1, 0, 0, 0, 0);
 const END_DATE_DT = new Date(END_DATE[0], END_DATE[1] - 1, 1, 0, 0, 0, 0);
-
-function sortObjectByKey(obj, key, asc) {
-    if (asc)
-        return obj.sort((a, b) => a[key] < b[key] ? -1 : a[key] > b[key] ? 1 : 0)
-    else
-        return obj.sort((a, b) => b[key] < a[key] ? -1 : b[key] > a[key] ? 1 : 0)
-}
 
 function datePrettyFormat(ts) {
     let d = new Date(ts);
@@ -136,47 +132,10 @@ function Product() {
     const [average, setAverage] = useState([]);
     const [dataShowParams, setDataShowParams] = useState({ start: START_DATE_DT, end: END_DATE_DT });
     const [setsShow, setSetsShow] = useState([...SETS]);
-    const [currentSort, setCurrentSort] = useState(['date', true]);
     const [clickLeft, setClickLeft] = useState("");
     const [clickRight, setClickRight] = useState("");
     const [graphLeft, setGraphLeft] = useState(START_DATE_DT);
     const [graphRight, setGraphRight] = useState(END_DATE_DT);
-
-    function buttonSetInclude(setName) {
-        return (
-            <React.Fragment key={setName}>
-                <label className="includeSetBox" htmlFor={`chk${setName}`}>{setName}</label>
-                <input
-                    id={`chk${setName.name}`}
-                    type="checkbox"
-                    checked={setsShow.includes(setName)}
-                    onChange={(e) => {
-                        if (e.currentTarget.checked) {
-                            setSetsShow([...setsShow, setName]);
-                        } else {
-                            setSetsShow(setsShow.filter((name) => name !== setName));
-                        }
-                    }}
-                    style={{ marginLeft: "3px" }}
-                />
-            </React.Fragment>
-        )
-    }
-
-    function tableHeader(field) {
-        return (
-            <th onClick={() => {
-                if (currentSort[0] === field) {
-                    setProduct(sortObjectByKey(product.slice(), field, !currentSort[1]))
-                    setCurrentSort([field, !currentSort[1]])
-                } else {
-                    setCurrentSort([field, true])
-                    setProduct(sortObjectByKey(product.slice(), field, true))
-                }
-
-            }}>{field + "  " + (currentSort[0] === field ? currentSort[1] ? "▲" : "▼" : "⇕")}</th>
-        )
-    }
 
     function zoom() {
         let refLeft = clickLeft
@@ -228,7 +187,7 @@ function Product() {
                 let dateConvert = newData.date.toDate();
                 let key = [dateConvert.getFullYear(), dateConvert.getMonth() + 1];
                 allData.push({
-                    id: doc.id,
+                    key: doc.id,
                     category: newData.category,
                     price: newData.price,
                     linkFull: newData.link,
@@ -291,8 +250,8 @@ function Product() {
                     onMouseUp={() => zoom()}
                 >
                     <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="epoch" type="number" scale="time" padding={{ left: 25, right: 25 }} interval={0} angle={30} tickMargin={15} height={50} domain={[graphLeft, graphRight]} allowDataOverflow tickFormatter={datePrettyFormat} />
-                    <YAxis label={{ value: 'Price (USD)', angle: -90, position: 'insideLeft' }} />
+                    <XAxis dataKey="epoch" type="number" scale="time" padding={{ left: 25, right: 25 }} interval={0} angle={30} tickMargin={15} height={50} domain={[graphLeft, graphRight]} allowDataOverflow tickFormatter={datePrettyFormat} style={{ userSelect: "none" }} />
+                    <YAxis label={{ value: 'Price (USD)', angle: -90, position: 'insideLeft' }} style={{ userSelect: "none" }} />
                     <Tooltip labelFormatter={datePrettyFormat} formatter={(value, name, props) => {
                         return `$${props.payload[props.dataKey]}, ${props.payload[props.dataKey + "_q"]} units`
                     }} />
@@ -306,48 +265,14 @@ function Product() {
                     ) : null}
                 </LineChart>
             </div>
-
-            <button className="resetSetButton" onClick={() => {
-                setDataShowParams({ start: START_DATE_DT, end: END_DATE_DT })
-                setSetsShow([...SETS]);
-                setGraphLeft(START_DATE_DT);
-                setGraphRight(END_DATE_DT);
-            }}>
-                Reset
-            </button>
-
-            {SETS.map((box) => { return buttonSetInclude(box) })}
-
-
-
-            <table>
-                <thead>
-                    <tr>
-                        {tableHeader("category")}
-                        {tableHeader("price")}
-                        {tableHeader("link")}
-                        {tableHeader("date")}
-                        {tableHeader("sets")}
-                    </tr>
-                </thead>
-                <tbody>
-                    {product.map((p) => {
-                        if (p.date >= dataShowParams.start && p.date <= dataShowParams.end && setsShow.includes(p.category)) {
-                            return (
-                                <tr key={p.id}>
-                                    <td>{p.category}</td>
-                                    <td>{p.price}</td>
-                                    <td>{<a href={"https://www.reddit.com" + p.linkFull} target="_blank" rel="noopener noreferrer">{p.link}</a>}</td>
-                                    <td>{p.date.toString()}</td>
-                                    <td>{p.sets}</td>
-                                </tr>
-                            )
-                        }
-
-                        return null
-                    })}
-                </tbody>
-            </table>
+            <div style={{ margin: 40, marginTop: 10 }}>
+                <Button style={{ marginBottom: 20 }} onClick={() => {
+                    setDataShowParams({ start: START_DATE_DT, end: END_DATE_DT })
+                    setGraphLeft(START_DATE_DT);
+                    setGraphRight(END_DATE_DT);
+                }}>Reset Date Filter</Button>
+                <Table columns={tableColumns} dataSource={product.filter((row) => row.date >= dataShowParams.start && row.date <= dataShowParams.end)} />
+            </div>
         </div >
     );
 }
