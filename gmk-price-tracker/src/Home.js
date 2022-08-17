@@ -39,7 +39,7 @@ function HomePage() {
                                     <Link to={'/products/' + product + '/'} key={id}>
                                         <Card hoverable
                                             cover={<img alt="example" src={product in images ? images[product].default : images["no_image"].default} />}
-                                            style={{ textAlign: 'center' }}
+
                                         >
                                             <Meta title={"GMK " + product.charAt(0).toUpperCase() + product.slice(1)}
                                                 description={"Sales: " + count} />
